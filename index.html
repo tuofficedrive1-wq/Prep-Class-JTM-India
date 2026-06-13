@@ -120,7 +120,12 @@ function modalHTML(){
 
 // ── MAIN RENDER ───────────────────────────────────────────────────────
 function render(){document.getElementById('root').innerHTML=S.user?dashHTML():loginHTML();renderModal();}
-function navTo(p){S.page=p;S.side=false;S.q='';updateContent();}
+function navTo(p) {
+  S.page = p;
+  S.side = false;
+  S.q = '';
+  render(); // updateContent() ki jagah render() ka istemal karein
+}
 function toggleSide(){S.side=!S.side;const sb=document.getElementById('sb');if(sb){sb.className='sidebar '+(S.side?'sb-open':'sb-closed');}const ov=document.getElementById('ov');if(ov)ov.style.display=S.side?'block':'none';}
 function doLogout(){S.user=null;S.page='overview';render();}
 
