@@ -109,6 +109,10 @@ tr:hover td{background:#fafcff}
 <div id="root"></div>
 <div id="mroot"></div>
 <div id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+
 <script>
 // ═══ HELPERS ═══════════════════════════════════════════════════════
 const uid=()=>'x'+Date.now()+Math.random().toString(36).slice(2,5);
@@ -127,11 +131,41 @@ const URMO=['جنوری','فروری','مارچ','اپریل','مئی','جون',
 const COLORS=['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#14b8a6','#f97316','#6366f1'];
 const EMOJIS=['😊','🌟','📚','✨','🎯','🏆','🌈','💡','🎨','🚀'];
 
-// ═══ STORAGE ══════════════════════════════════════════════════════════
+// ═══ FIREBASE STORAGE ═════════════════════════════════════════════════
+const firebaseConfig = {
+  apiKey: "AIzaSyD5u8n3Q9oEfs80kM7ahLh9OC9KrlB2k0o",
+  authDomain: "prep-class-cbbea.firebaseapp.com",
+  projectId: "prep-class-cbbea",
+  storageBucket: "prep-class-cbbea.firebasestorage.app",
+  messagingSenderId: "477765744456",
+  appId: "1:477765744456:web:8fa15359bb9bb10ca0a57d",
+  measurementId: "G-J9QMNVWQHV"
+};
+
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+const fdb = firebase.firestore();
+
 const K={U:'s4u',C:'s4c',S:'s4s',A:'s4a',R:'s4r'};
+
+// Naya db object jo localStorage ki jagah Firestore use karega
 const db={
-  get:k=>{try{const v=localStorage.getItem(k);return v?JSON.parse(v):null;}catch{return null;}},
-  set:(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
+  get: async (k) => {
+    try {
+      const doc = await fdb.collection('dashboardData').doc(k).get();
+      return doc.exists ? doc.data().list : null;
+    } catch(e) {
+      console.error("Firebase se data lane mein masla:", e);
+      return null;
+    }
+  },
+  set: (k,v) => {
+    try {
+      fdb.collection('dashboardData').doc(k).set({list: v});
+    } catch(e) {
+      console.error("Firebase par data save karne mein masla:", e);
+    }
+  }
 };
 
 // ═══ STATE ═══════════════════════════════════════════════════════════
@@ -1040,13 +1074,23 @@ function bH(s){const m={present:{bg:'#dcfce7',c:'#15803d',l:'✓ Hazir'},absent:
 function noDt(icon,msg){return`<div class="nodata"><div style="font-size:44px;margin-bottom:12px">${icon}</div><p style="font-size:14px;font-weight:500">${msg}</p></div>`;}
 function noCls(msg='Koi class assign nahi',sub='Admin se class assignment karwaen'){return`<div style="display:flex;align-items:center;justify-content:center;height:65vh"><div style="text-align:center;max-width:320px"><div style="font-size:60px;margin-bottom:16px">📋</div><h2 style="font-size:20px;font-weight:700;color:#334155;margin-bottom:8px">${msg}</h2><p style="font-size:14px;color:#64748b;line-height:1.6">${sub}</p></div></div>`;}
 
-// ══════════════════════════════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════════════════════════════
-function init(){
-  let u=db.get(K.U);
-  if(!u?.length){u=[ADMIN];db.set(K.U,u);}
-  S.users=u;S.classes=db.get(K.C)||[];S.students=db.get(K.S)||[];S.att=db.get(K.A)||[];S.reports=db.get(K.R)||[];
+// ═══ INIT ══════════════════════════════════════════════════════════════
+async function init(){
+  // Jab tak data load ho raha hai, Loading screen dikhayein
+  document.getElementById('root').innerHTML = '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f172a;color:#fff;font-size:18px;font-weight:bold;">Firebase se data load ho raha hai... ⏳</div>';
+  
+  let u = await db.get(K.U);
+  if(!u?.length) { 
+    u = [ADMIN]; 
+    db.set(K.U, u); 
+  }
+  
+  S.users = u;
+  S.classes = (await db.get(K.C)) || [];
+  S.students = (await db.get(K.S)) || [];
+  S.att = (await db.get(K.A)) || [];
+  S.reports = (await db.get(K.R)) || [];
+  
   render();
 }
 init();
