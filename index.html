@@ -261,10 +261,29 @@ function dLogin(){
   const un=document.getElementById('lun').value.trim();
   const pw=document.getElementById('lpw').value;
   const err=document.getElementById('lerr');
-  if(!un||!pw){err.textContent='Username aur password dono zaruri hain';err.style.display='block';return;}
-  const f=S.users.find(u=>u.username===un&&u.password===pw);
-  if(f){S.user=f;S.page='ov';render();}
-  else{err.textContent='Galat username ya password — dobara koshish karen';err.style.display='block';}
+  
+  if(!un||!pw){
+    err.textContent='Username aur password dono zaruri hain';
+    err.style.display='block';
+    return;
+  }
+  
+  // Yahan logic theek ki gayi hai taake Admin (username/password) 
+  // aur Teacher (un/pw) dono login kar sakein 👇
+  const f = S.users.find(u => 
+    (u.username === un || u.un === un) && 
+    (u.password === pw || u.pw === pw)
+  );
+  
+  if(f){
+    S.user=f;
+    S.page='ov';
+    render();
+  }
+  else{
+    err.textContent='Galat username ya password — dobara koshish karen';
+    err.style.display='block';
+  }
 }
 
 // ═══ DASH LAYOUT ══════════════════════════════════════════════════════
