@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<title>Student Management System - Mufattish</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f1f5f9;color:#1e293b}
+input,select,textarea,button{font-family:inherit}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+.sb{position:fixed;top:0;left:0;bottom:0;z-index:30;background:#0f172a;color:#fff;display:flex;flex-direction:column;transition:width .2s;overflow:hidden}
+.sb-on{width:250px}.sb-off{width:0}
+.nb{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:none;background:transparent;color:#64748b;font-size:13px;font-weight:500;text-align:left;cursor:pointer;white-space:nowrap;transition:all .15s}
+.nb:hover{background:#1e293b;color:#fff}
+.nb.on{background:#2563eb;color:#fff}
+.card{background:#fff;border-radius:14px;border:1px solid #e2e8f0;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.cp{padding:16px}
+.ch{padding:12px 18px;border-bottom:1px solid #f1f5f9}
+.fi{width:100%;padding:9px 12px;border:1px solid #e2e8f0;border-radius:10px;font-size:13px;background:#fff;transition:all .2s}
+.fi:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.12)}
+.fl{font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px}
+.ferr{font-size:11px;color:#dc2626;margin-top:3px;display:none}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit;transition:all .15s}
+.btn:hover{opacity:.88}
+.bb{background:#2563eb;color:#fff}
+.bg{background:#16a34a;color:#fff}
+.bp{background:#7c3aed;color:#fff}
+.br{background:#dc2626;color:#fff}
+.bsb{background:#eff6ff;color:#2563eb}
+.bsr{background:#fef2f2;color:#dc2626}
+.bsg{background:#f0fdf4;color:#16a34a}
+table{width:100%;border-collapse:collapse}
+th{font-size:11px;font-weight:600;color:#64748b;text-align:left;padding:9px 16px;background:#f8fafc;text-transform:uppercase;letter-spacing:.3px}
+td{padding:11px 16px;font-size:13px;border-top:1px solid #f8fafc;color:#334155}
+tr:hover td{background:#fafcff}
+.badge{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.prog{width:100%;height:6px;background:#f1f5f9;border-radius:4px;overflow:hidden}
+.pbar{height:100%;border-radius:4px;transition:width .3s}
+.mov{position:fixed;inset:0;background:rgba(15,23,42,.5);display:flex;align-items:flex-end;justify-content:center;z-index:50;padding:12px;backdrop-filter:blur(2px)}
+@media(min-width:600px){.mov{align-items:center}}
+.mbox{background:#fff;border-radius:20px;width:100%;max-width:480px;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 25px 60px rgba(0,0,0,.25)}
+.mh{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid #f1f5f9;flex-shrink:0}
+.mb{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px}
+.mf{display:flex;gap:10px;padding:16px 20px;border-top:1px solid #f1f5f9;flex-shrink:0}
+#toast{position:fixed;bottom:20px;right:20px;z-index:999;display:none;align-items:center;gap:8px;padding:12px 18px;border-radius:12px;color:#fff;font-size:13px;font-weight:600;box-shadow:0 8px 25px rgba(0,0,0,.2)}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:20}
+.av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.nodata{padding:56px 20px;text-align:center;color:#94a3b8}
+.gap{display:flex;flex-direction:column;gap:16px}
+.row{display:flex;align-items:center;gap:8px}
+.bw{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.ga{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.ovx{overflow-x:auto}
+.scard{background:#fff;border-radius:12px;padding:16px;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.pt{font-size:20px;font-weight:700;color:#1e293b}
+.ps{font-size:12px;color:#64748b;margin-top:4px}
+.warn{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.abt{padding:6px 11px;border-radius:8px;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.stbox{background:#fff;border-radius:14px;padding:16px;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.stnum{font-size:28px;font-weight:700;color:#1e293b}
+.stlbl{font-size:11px;color:#64748b;margin-top:3px;font-weight:500}
+.tbanner{background:linear-gradient(135deg,#1d4ed8,#4338ca);border-radius:16px;padding:22px;color:#fff}
+.tbcls{font-size:24px;font-weight:800}
+.tbsub{font-size:12px;color:#bfdbfe;margin-top:6px}
+.tbstat{background:rgba(255,255,255,.15);border-radius:10px;padding:11px 15px;min-width:90px}
+.stucard{background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:14px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.stuav{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0}
+.attrow{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-top:1px solid #f8fafc;flex-wrap:wrap;gap:8px}
+.grbox{display:inline-flex;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+
+<script>
+const tod=()=>new Date().toISOString().slice(0,10);
+const fD=d=>{try{return new Date(d+'T12:00').toLocaleDateString('en-PK',{day:'2-digit',month:'short',year:'numeric'});}catch{return d;}};
+const fDlong=d=>{try{return new Date(d+'T12:00').toLocaleDateString('ur-PK',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}catch{return d;}};
+const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const pct=(n,d)=>d?Math.round(n/d*100):0;
+const URMO=['جنوری','فروری','مارچ','اپریل','مئی','جون','جولائی','اگست','ستمبر','اکتوبر','نومبر','دسمبر'];
+const bH=s=>{const m={present:{bg:'#dcfce7',c:'#15803d',l:'✓ Hazir'},absent:{bg:'#fee2e2',c:'#dc2626',l:'✗ Ghair Hazir'},late:{bg:'#fef3c7',c:'#d97706',l:'⏰ Der Se'}};const x=m[s]||{bg:'#f1f5f9',c:'#64748b',l:s};return `<span class="badge" style="background:${x.bg};color:${x.c}">${x.l}</span>`;};
+const noDt=(icon,msg)=>`<div class="nodata"><div style="font-size:44px;margin-bottom:12px">${icon}</div><p style="font-size:14px;font-weight:500">${msg}</p></div>`;
+
+let S={
+  user:null,page:'ov',side:false,
+  users:[],classes:[],students:[],att:[],reports:[],
+  attDate:tod(),attCls:'',
+  rM:new Date().getMonth()+1,rY:new Date().getFullYear(),rCls:''
+};
+
+function mfC(){return S.classes.filter(c=>c.mId===S.user.id);}
+
+function render(){document.getElementById('root').innerHTML=dashHTML();}
+function navTo(p){S.page=p;S.side=false;uc();}
+function tgSide(){S.side=!S.side;const sb=document.getElementById('sb');if(sb)sb.className='sb '+(S.side?'sb-on':'sb-off');}
+function logout(){sessionStorage.removeItem('loggedInUser');window.location.href='index.html';}
+function uc(){document.getElementById('ct').innerHTML=mC();}
+
+function dashHTML(){
+  const uName = S.user.nm || S.user.name || 'Mufattish';
+  const navM=[{p:'ov',i:'📊',l:'Dashboard'},{p:'cl',i:'🏫',l:'Meri Classes'},{p:'at',i:'📅',l:'Attendance'},{p:'rp',i:'📈',l:'Reports'}];
+  const nh=navM.map(({p,i,l})=>`<button class="nb${S.page===p?' on':''}" onclick="navTo('${p}')"><span style="font-size:16px;flex-shrink:0">${i}</span>${l}</button>`).join('');
+  return `<div style="display:flex;height:100vh;overflow:hidden">
+    <aside id="sb" class="sb ${S.side?'sb-on':'sb-off'}">
+      <div style="padding:16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px;flex-shrink:0">
+        <span style="font-size:22px;flex-shrink:0">🎓</span>
+        <div><p style="margin:0;font-size:14px;font-weight:700">Student Mgmt</p></div>
+      </div>
+      <nav style="flex:1;padding:10px;overflow-y:auto;display:flex;flex-direction:column;gap:2px">${nh}</nav>
+      <div style="padding:10px;border-top:1px solid rgba(255,255,255,.08);flex-shrink:0">
+        <button onclick="logout()" class="nb" style="color:#f87171">🚪 Logout</button>
+      </div>
+    </aside>
+    <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0">
+      <header style="background:#fff;border-bottom:1px solid #e2e8f0;padding:11px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+        <p style="font-size:12px;color:#64748b">${fDlong(tod())}</p>
+        <span class="badge" style="background:#8b5cf615;color:#8b5cf6">Mufattish</span>
+      </header>
+      <div id="ct" style="flex:1;overflow-y:auto;padding:16px">${mC()}</div>
+    </div>
+  </div>`;
+}
+
+function mC(){switch(S.page){case'cl':return mfCls();case'at':return mfAt();case'rp':return mfRp();default:return mfOv();}}
+
+function mfOv(){
+  const mc=mfC();if(!mc.length)return `<div style="padding:40px;text-align:center">Koi class assign nahi hai.</div>`;
+  const td=tod();const myStu=S.students.filter(s=>mc.some(c=>c.id===s.cId));
+  const p=S.att.filter(a=>mc.some(c=>c.id===a.cId)&&a.date===td&&a.st==='present').length;
+  const nameDisplay = S.user.nm || S.user.name || 'Mufattish';
+  return `<div class="gap">
+  <div><h1 class="pt">Mufattish Dashboard</h1><p class="ps">As-salamu Alaykum, ${esc(nameDisplay)}</p></div>
+  <div class="ga">${[['🏫',mc.length,'Classes','#1d4ed8'],['👨‍🎓',myStu.length,'Students','#15803d'],['✅',p,'Aaj Hazir','#7c3aed']].map(([e,v,l,c])=>`
+  <div class="stbox"><div style="font-size:26px;margin-bottom:8px">${e}</div><div class="stnum" style="color:${c}">${v}</div><div class="stlbl">${l}</div></div>`).join('')}</div>
+  </div>`;
+}
+
+function mfCls(){
+  const mc=mfC();
+  return `<div class="gap"><div><h1 class="pt">Meri Classes</h1></div>
+  ${!mc.length?noDt('🏫','Koi class assign nahi'):`<div class="g3">${mc.map(cls=>{const t=S.users.find(u=>u.id===cls.tId);const sc=S.students.filter(s=>s.cId===cls.id).length;return `
+  <div class="card"><div style="background:linear-gradient(135deg,#6d28d9,#7c3aed);padding:14px 16px">
+    <h3 style="color:#fff;font-weight:800;font-size:18px;margin:0">${esc(cls.n)} ${esc(cls.s)}</h3>
+  </div>
+  <div style="padding:14px;">
+    <p>Teacher: <b>${t?esc(t.nm||t.name):'Assign nahi'}</b></p>
+    <p>Students: <b>${sc}</b></p>
+  </div></div>`;}).join('')}</div>`}
+  </div>`;
+}
+
+function mfAt(){
+  const mc=mfC();const shown=S.attCls?mc.filter(c=>c.id===S.attCls):mc;const tda=S.att.filter(a=>a.date===S.attDate);
+  return `<div class="gap"><div><h1 class="pt">Attendance</h1></div>
+  ${!shown.length?noDt('📅','Koi class nahi'):shown.map(cls=>{
+    const stu=S.students.filter(s=>s.cId===cls.id);const ca=tda.filter(a=>a.cId===cls.id);
+    const p=ca.filter(a=>a.st==='present').length;
+    return `<div class="card"><div class="ch">${esc(cls.n)} ${esc(cls.s)} (Hazir: ${p}/${stu.length})</div>
+    ${stu.map(s=>{const r=ca.find(a=>a.sId===s.id);return `<div style="padding:9px 18px;display:flex;justify-content:space-between">${esc(s.n)}${r?bH(r.st):'<span>Mark nahi</span>'}</div>`;}).join('')}
+    </div>`;
+  }).join('')}</div>`;
+}
+
+function mfRp(){
+  const mc=mfC();const shown=S.rCls?mc.filter(c=>c.id===S.rCls):mc;
+  const allR=S.reports.filter(r=>r.m===S.rM&&r.y===S.rY&&shown.some(c=>c.id===r.cId));
+  return `<div class="gap"><div><h1 class="pt">Reports</h1></div>
+  <div class="card">
+  ${!allR.length?noDt('📋','Abhi koi report nahi'):`<div class="ovx"><table>
+  <thead><tr><th>Student</th><th>Class</th><th>Marks</th><th>Grade</th><th>Remarks</th></tr></thead>
+  <tbody>${allR.map(r=>{const s=S.students.find(x=>x.id===r.sId);const cls=mc.find(x=>x.id===r.cId);return `
+  <tr><td><b>${esc(s?.n||'—')}</b></td><td>${cls?`${esc(cls.n)} ${esc(cls.s)}`:'—'}</td><td><b>${r.mk}/${r.tot}</b></td><td>${r.gr}</td><td>${esc(r.rem||'—')}</td></tr>`;}).join('')}
+  </tbody></table></div>`}
+  </div></div>`;
+}
+
+async function init(){
+  const savedUser = sessionStorage.getItem('loggedInUser');
+  if(!savedUser) { window.location.href = 'index.html'; return; }
+  S.user = JSON.parse(savedUser);
+  if(S.user.role !== 'mufattish') { window.location.href = 'index.html'; return; }
+
+  S.classes = (await db.get(K.C)) || [];
+  S.students = (await db.get(K.S)) || [];
+  S.att = (await db.get(K.A)) || [];
+  S.reports = (await db.get(K.R)) || [];
+  render();
+}
+init();
+</script>
+</body>
+</html>

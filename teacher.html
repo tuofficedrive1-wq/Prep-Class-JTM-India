@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<title>Student Management System - Teacher</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f1f5f9;color:#1e293b}
+input,select,textarea,button{font-family:inherit}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
+.sb{position:fixed;top:0;left:0;bottom:0;z-index:30;background:#0f172a;color:#fff;display:flex;flex-direction:column;transition:width .2s;overflow:hidden}
+.sb-on{width:250px}.sb-off{width:0}
+.nb{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:none;background:transparent;color:#64748b;font-size:13px;font-weight:500;text-align:left;cursor:pointer;white-space:nowrap;transition:all .15s}
+.nb:hover{background:#1e293b;color:#fff}
+.nb.on{background:#2563eb;color:#fff}
+.card{background:#fff;border-radius:14px;border:1px solid #e2e8f0;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.cp{padding:16px}
+.ch{padding:12px 18px;border-bottom:1px solid #f1f5f9}
+.fi{width:100%;padding:9px 12px;border:1px solid #e2e8f0;border-radius:10px;font-size:13px;background:#fff;transition:all .2s}
+.fi:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.12)}
+.fl{font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px}
+.ferr{font-size:11px;color:#dc2626;margin-top:3px;display:none}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit;transition:all .15s}
+.btn:hover{opacity:.88}
+.bb{background:#2563eb;color:#fff}
+.bg{background:#16a34a;color:#fff}
+.bp{background:#7c3aed;color:#fff}
+.br{background:#dc2626;color:#fff}
+.bsb{background:#eff6ff;color:#2563eb}
+.bsr{background:#fef2f2;color:#dc2626}
+.bsg{background:#f0fdf4;color:#16a34a}
+table{width:100%;border-collapse:collapse}
+th{font-size:11px;font-weight:600;color:#64748b;text-align:left;padding:9px 16px;background:#f8fafc;text-transform:uppercase;letter-spacing:.3px}
+td{padding:11px 16px;font-size:13px;border-top:1px solid #f8fafc;color:#334155}
+tr:hover td{background:#fafcff}
+.badge{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
+.prog{width:100%;height:6px;background:#f1f5f9;border-radius:4px;overflow:hidden}
+.pbar{height:100%;border-radius:4px;transition:width .3s}
+.mov{position:fixed;inset:0;background:rgba(15,23,42,.5);display:flex;align-items:flex-end;justify-content:center;z-index:50;padding:12px;backdrop-filter:blur(2px)}
+@media(min-width:600px){.mov{align-items:center}}
+.mbox{background:#fff;border-radius:20px;width:100%;max-width:480px;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 25px 60px rgba(0,0,0,.25)}
+.mh{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid #f1f5f9;flex-shrink:0}
+.mb{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px}
+.mf{display:flex;gap:10px;padding:16px 20px;border-top:1px solid #f1f5f9;flex-shrink:0}
+#toast{position:fixed;bottom:20px;right:20px;z-index:999;display:none;align-items:center;gap:8px;padding:12px 18px;border-radius:12px;color:#fff;font-size:13px;font-weight:600;box-shadow:0 8px 25px rgba(0,0,0,.2)}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:20}
+.av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
+.nodata{padding:56px 20px;text-align:center;color:#94a3b8}
+.gap{display:flex;flex-direction:column;gap:16px}
+.row{display:flex;align-items:center;gap:8px}
+.bw{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.g3{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+.ga{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:12px}
+.ovx{overflow-x:auto}
+.scard{background:#fff;border-radius:12px;padding:16px;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.pt{font-size:20px;font-weight:700;color:#1e293b}
+.ps{font-size:12px;color:#64748b;margin-top:4px}
+.warn{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.abt{padding:6px 11px;border-radius:8px;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.stbox{background:#fff;border-radius:14px;padding:16px;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.stnum{font-size:28px;font-weight:700;color:#1e293b}
+.stlbl{font-size:11px;color:#64748b;margin-top:3px;font-weight:500}
+.tbanner{background:linear-gradient(135deg,#1d4ed8,#4338ca);border-radius:16px;padding:22px;color:#fff}
+.tbcls{font-size:24px;font-weight:800}
+.tbsub{font-size:12px;color:#bfdbfe;margin-top:6px}
+.tbstat{background:rgba(255,255,255,.15);border-radius:10px;padding:11px 15px;min-width:90px}
+.stucard{background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:14px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.stuav{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0}
+.attrow{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-top:1px solid #f8fafc;flex-wrap:wrap;gap:8px}
+.grbox{display:inline-flex;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700}
+</style>
+</head>
+<body>
+<div id="root"></div>
+<div id="mroot"></div>
+<div id="toast"></div>
+
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+
+<script>
+const uid=()=>'x'+Date.now()+Math.random().toString(36).slice(2,5);
+const tod=()=>new Date().toISOString().slice(0,10);
+const fD=d=>{try{return new Date(d+'T12:00').toLocaleDateString('en-PK',{day:'2-digit',month:'short',year:'numeric'});}catch{return d;}};
+const fDlong=d=>{try{return new Date(d+'T12:00').toLocaleDateString('ur-PK',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}catch{return d;}};
+const grd=(m,t)=>{const p=m/t*100;return p>=90?'A+':p>=80?'A':p>=65?'B':p>=50?'C':p>=40?'D':'F';};
+const gBg=g=>g==='A+'||g==='A'?'#dcfce7':g==='B'?'#dbeafe':g==='C'?'#fef3c7':'#fee2e2';
+const gCl=g=>g==='A+'||g==='A'?'#15803d':g==='B'?'#1d4ed8':g==='C'?'#d97706':'#dc2626';
+const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const pct=(n,d)=>d?Math.round(n/d*100):0;
+const URMO=['جنوری','فروری','مارچ','اپریل','مئی','جون','جولائی','اگست','ستمبر','اکتوبر','نومبر','دسمبر'];
+const COLORS=['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#14b8a6','#f97316','#6366f1'];
+const bH=s=>{const m={present:{bg:'#dcfce7',c:'#15803d',l:'✓ Hazir'},absent:{bg:'#fee2e2',c:'#dc2626',l:'✗ Ghair Hazir'},late:{bg:'#fef3c7',c:'#d97706',l:'⏰ Der Se'}};const x=m[s]||{bg:'#f1f5f9',c:'#64748b',l:s};return `<span class="badge" style="background:${x.bg};color:${x.c}">${x.l}</span>`;};
+const noDt=(icon,msg)=>`<div class="nodata"><div style="font-size:44px;margin-bottom:12px">${icon}</div><p style="font-size:14px;font-weight:500">${msg}</p></div>`;
+const noCls=(msg='Koi class assign nahi',sub='Admin se class assignment karwaen')=>`<div style="display:flex;align-items:center;justify-content:center;height:65vh"><div style="text-align:center;max-width:320px"><div style="font-size:60px;margin-bottom:16px">📋</div><h2 style="font-size:20px;font-weight:700;color:#334155;margin-bottom:8px">${msg}</h2><p style="font-size:14px;color:#64748b;line-height:1.6">${sub}</p></div></div>`;
+
+let S={
+  user:null,page:'ov',side:false,
+  users:[],classes:[],students:[],att:[],reports:[],
+  q:'',attDate:tod(),attCls:'',
+  rM:new Date().getMonth()+1,rY:new Date().getFullYear(),
+  modal:{show:false,type:'',data:null}
+};
+const sv={s:()=>db.set(K.S,S.students),a:()=>db.set(K.A,S.att),r:()=>db.set(K.R,S.reports)};
+
+let _tt;
+function toast(msg,type){
+  const el=document.getElementById('toast');
+  el.innerHTML=(type==='e'?'✗':'✓')+' '+msg;
+  el.style.display='flex';el.style.background=type==='e'?'#ef4444':'#10b981';
+  clearTimeout(_tt);_tt=setTimeout(()=>el.style.display='none',3000);
+}
+
+function om(type,dj){S.modal={show:true,type,data:dj?JSON.parse(dj):null};rm();}
+function cm(){S.modal={show:false,type:'',data:null};rm();}
+function rm(){document.getElementById('mroot').innerHTML=S.modal.show?modalHTML():'';}
+
+function modalHTML(){
+  return `<div class="mov" onclick="if(event.target===this)cm()">
+  <div class="mbox">
+    <div class="mh"><h3 style="font-size:15px;font-weight:700">Student Details</h3>
+    <button onclick="cm()" style="background:none;border:none;font-size:20px;color:#94a3b8;cursor:pointer;line-height:1">×</button></div>
+    <div class="mb">${stuBody()}</div>
+    <div class="mf">
+      <button onclick="cm()" class="btn" style="flex:1;background:#f8fafc;border:1px solid #e2e8f0;color:#64748b">Mansookh</button>
+      <button onclick="sStu()" class="btn bb" style="flex:1">${S.modal.data?'Update Karen':'Save Karen'}</button>
+    </div>
+  </div></div>`;
+}
+
+function myCls(){return S.classes.find(c=>c.tId===S.user.id);}
+function myStus(){const mc=myCls();return mc?S.students.filter(s=>s.cId===mc.id):[];}
+
+function render(){document.getElementById('root').innerHTML=dashHTML();rm();}
+function navTo(p){S.page=p;S.side=false;S.q='';uc();}
+function tgSide(){S.side=!S.side;const sb=document.getElementById('sb');if(sb)sb.className='sb '+(S.side?'sb-on':'sb-off');const ov=document.getElementById('sov');if(ov)ov.style.display=S.side?'block':'none';}
+function logout(){sessionStorage.removeItem('loggedInUser');window.location.href='index.html';}
+function uc(){document.getElementById('ct').innerHTML=tC();}
+
+function dashHTML(){
+  const uName = S.user.nm || S.user.name || 'Teacher';
+  const navT=[{p:'ov',i:'📊',l:'Mera Dashboard'},{p:'st',i:'👨‍🎓',l:'Students'},{p:'at',i:'📅',l:'Hazri'},{p:'rp',i:'📈',l:'Monthly Report'}];
+  const nh=navT.map(({p,i,l})=>`<button class="nb${S.page===p?' on':''}" onclick="navTo('${p}')"><span style="font-size:16px;flex-shrink:0">${i}</span>${l}</button>`).join('');
+  return `<div id="sov" onclick="tgSide()" style="display:${S.side?'block':'none'}" class="ov"></div>
+  <div style="display:flex;height:100vh;overflow:hidden">
+    <aside id="sb" class="sb ${S.side?'sb-on':'sb-off'}">
+      <div style="padding:16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px;flex-shrink:0">
+        <span style="font-size:22px;flex-shrink:0">🎓</span>
+        <div><p style="margin:0;font-size:14px;font-weight:700;white-space:nowrap">Student Mgmt</p><p style="margin:0;font-size:10px;color:#475569;white-space:nowrap">System v4.0</p></div>
+      </div>
+      <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px;flex-shrink:0">
+        <div class="av" style="background:#10b98133;color:#10b981;font-size:15px">${esc(uName[0].toUpperCase())}</div>
+        <div style="min-width:0"><p style="margin:0;font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(uName)}</p><p style="margin:0;font-size:10px;color:#475569">Teacher</p></div>
+      </div>
+      <nav style="flex:1;padding:10px;overflow-y:auto;display:flex;flex-direction:column;gap:2px">${nh}</nav>
+      <div style="padding:10px;border-top:1px solid rgba(255,255,255,.08);flex-shrink:0">
+        <button onclick="logout()" class="nb" style="color:#f87171">🚪 Logout</button>
+      </div>
+    </aside>
+    <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0">
+      <header style="background:#fff;border-bottom:1px solid #e2e8f0;padding:11px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;box-shadow:0 1px 3px rgba(0,0,0,.04)">
+        <div class="row">
+          <button onclick="tgSide()" style="padding:7px;border-radius:9px;border:none;background:#f1f5f9;font-size:17px;cursor:pointer;line-height:1">☰</button>
+          <p style="font-size:12px;color:#64748b">${fDlong(tod())}</p>
+        </div>
+        <div class="row">
+          <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:#10b98115;color:#10b981">Teacher</span>
+          <div class="av" style="background:#10b98120;color:#10b981">${esc(uName[0].toUpperCase())}</div>
+        </div>
+      </header>
+      <div id="ct" style="flex:1;overflow-y:auto;padding:16px">${tC()}</div>
+    </div>
+  </div>`;
+}
+
+function tC(){switch(S.page){case'st':return tStu();case'at':return tAtt();case'rp':return tRp();default:return tOv();}}
+
+function tOv(){
+  const mc=myCls();
+  if(!mc){return noCls('Koi Class Assign Nahi','Admin se rabta karen — woh aapko class assign kar denge.');}
+  const ms=myStus();const td=tod();
+  const tda=S.att.filter(a=>a.cId===mc.id&&a.date===td);
+  const prs=tda.filter(a=>a.st==='present').length;
+  const abs=tda.filter(a=>a.st==='absent').length;
+  const lt=tda.filter(a=>a.st==='late').length;
+  const pp=pct(prs,ms.length);
+  const mn=new Date().getMonth()+1,yr=new Date().getFullYear();
+  const msStr=`${yr}-${String(mn).padStart(2,'0')}`;
+  const mAtt=S.att.filter(a=>a.cId===mc.id&&a.date.startsWith(msStr));
+  const mDays=[...new Set(mAtt.map(a=>a.date))].length;
+  const mPrs=mAtt.filter(a=>a.st==='present').length;
+  const mPp=pct(mPrs,ms.length*mDays);
+  const nameDisplay = S.user.nm || S.user.name || 'Teacher';
+  return `<div class="gap">
+  <div class="bw">
+    <div><h1 class="pt">As-salamu Alaykum! 👋</h1><p class="ps">${esc(nameDisplay)}'s Dashboard</p></div>
+    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:8px 14px;font-size:12px;color:#15803d;font-weight:600">🟢 Active Teacher</div>
+  </div>
+  <div class="tbanner">
+    <div class="bw" style="margin-bottom:16px">
+      <div>
+        <p style="font-size:12px;color:#93c5fd;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Aapki Assigned Class</p>
+        <h2 class="tbcls" style="margin-top:4px">${esc(mc.n)} <span style="color:#93c5fd;font-weight:400">${esc(mc.s)}</span></h2>
+        <div class="tbsub row" style="margin-top:8px;flex-wrap:wrap;gap:8px">
+          ${mc.timing?`<span>⏰ ${esc(mc.timing)}</span>`:''}
+          ${mc.room?`<span>📍 ${esc(mc.room)}</span>`:''}
+          ${mc.notes?`<span>📝 ${esc(mc.notes)}</span>`:''}
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;flex-wrap:wrap;gap:10px">
+      ${[['👨‍🎓',ms.length,'Kul Students'],['✅',prs,'Aaj Hazir'],['❌',abs,'Ghair Hazir'],['⏰',lt,'Der Se'],['📊',pp+'%','Aaj %']].map(([e,v,l])=>`
+      <div class="tbstat"><p style="font-size:20px;font-weight:800">${v}</p><p style="font-size:10px;color:#bfdbfe;margin-top:2px">${l}</p></div>`).join('')}
+    </div>
+  </div>
+  <div class="ga">
+    <div class="stbox"><div style="font-size:24px;margin-bottom:8px">📅</div><div class="stnum">${mDays}</div><div class="stlbl">${URMO[mn-1]} Mein Din</div></div>
+    <div class="stbox"><div style="font-size:24px;margin-bottom:8px">📈</div><div class="stnum" style="color:${mPp>=75?'#15803d':mPp>=50?'#d97706':'#dc2626'}">${mPp}%</div><div class="stlbl">Mahana Hazri</div></div>
+    <div class="stbox"><div style="font-size:24px;margin-bottom:8px">✅</div><div class="stnum" style="color:#15803d">${mPrs}</div><div class="stlbl">Is Mahine Hazir</div></div>
+    <div class="stbox"><div style="font-size:24px;margin-bottom:8px">📋</div><div class="stnum" style="color:#7c3aed">${S.reports.filter(r=>r.cId===mc.id&&r.m===mn&&r.y===yr).length}</div><div class="stlbl">Reports Bhari Hain</div></div>
+  </div>
+  <div class="card cp">
+    <p style="font-size:13px;font-weight:700;margin-bottom:12px;color:#0f172a">⚡ Quick Actions</p>
+    <div class="row" style="flex-wrap:wrap;gap:8px">
+      <button onclick="navTo('at')" class="btn bb" style="font-size:12px">📅 Aaj ki Hazri Lagao</button>
+      <button onclick="navTo('st')" class="btn bg" style="font-size:12px">👨‍🎓 Students Dekho</button>
+      <button onclick="navTo('rp')" class="btn bp" style="font-size:12px">📈 Report Fill Karo</button>
+      <button onclick="navTo('st');setTimeout(()=>om('stu',null),100)" class="btn bsb" style="font-size:12px">➕ Naya Student</button>
+    </div>
+  </div>
+  </div>`;
+}
+
+function tStu(){
+  const mc=myCls();if(!mc)return noCls();
+  const ms=myStus();const q=S.q.toLowerCase();
+  const list=ms.filter(s=>!q||[s.n,s.fn,s.sid].some(v=>v?.toLowerCase().includes(q)));
+  return `<div class="gap">
+  <div class="bw">
+    <div><h1 class="pt">Students</h1><p class="ps">${esc(mc.n)} ${esc(mc.s)} — ${ms.length} students</p></div>
+    <button class="btn bb" onclick="om('stu',null)">➕ Naya Student Add Karo</button>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr auto;gap:10px">
+    <div style="position:relative"><span style="position:absolute;left:11px;top:50%;transform:translateY(-50%)">🔎</span>
+    <input class="fi" placeholder="Talash..." value="${esc(S.q)}" oninput="S.q=this.value;uc()" style="padding-left:34px"/></div>
+  </div>
+  ${list.length===0?noDt('👨‍🎓','Koi student nahi'):`<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">
+    ${list.map((s,i)=>{
+      const clr=COLORS[i%COLORS.length];
+      const sj=esc(JSON.stringify(s));
+      const sAtt=S.att.filter(a=>a.sId===s.id);
+      const sP=sAtt.filter(a=>a.st==='present').length;
+      const sT=sAtt.length;const sPp=pct(sP,sT);
+      return `<div class="card"><div style="height:6px;background:${clr}"></div><div style="padding:14px">
+        <div class="row" style="margin-bottom:12px">
+          <div class="av" style="width:48px;height:48px;border-radius:14px;background:${clr}15;color:${clr};font-size:20px;font-weight:800">${s.n[0].toUpperCase()}</div>
+          <div style="flex:1;min-width:0"><p style="font-size:14px;font-weight:700;color:#0f172a">${esc(s.n)}</p><p style="font-size:11px;color:#64748b">${esc(s.fn?'Walid: '+s.fn:'—')}</p></div>
+          <div class="row" style="gap:4px">
+            <button onclick="om('stu','${sj}')" class="btn bsb" style="padding:5px 8px;font-size:12px">✏</button>
+            <button onclick="dStu('${s.id}')" class="btn bsr" style="padding:5px 8px;font-size:12px">🗑</button>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px">
+          <div style="background:#f8fafc;border-radius:8px;padding:6px 8px"><p style="color:#94a3b8;font-weight:600">Roll No</p><p style="font-weight:700">${esc(s.rn||'—')}</p></div>
+          <div style="background:#f8fafc;border-radius:8px;padding:6px 8px"><p style="color:#94a3b8;font-weight:600">Student ID</p><p style="font-weight:700">${esc(s.sid||'—')}</p></div>
+        </div>
+      </div></div>`;}).join('')}
+  </div>`}
+  </div>`;
+}
+
+function tAtt(){
+  const mc=myCls();if(!mc)return noCls();
+  const ms=myStus();
+  const tda=S.att.filter(a=>a.cId===mc.id&&a.date===S.attDate);
+  const prs=tda.filter(a=>a.st==='present').length;
+  const abs=tda.filter(a=>a.st==='absent').length;
+  const lt=tda.filter(a=>a.st==='late').length;
+  const pp=pct(prs,ms.length);
+  return `<div class="gap">
+  <div><h1 class="pt">Hazri</h1><p class="ps">${esc(mc.n)} ${esc(mc.s)}</p></div>
+  <div style="display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap">
+    <div style="flex:1;min-width:160px"><label class="fl">Tarikh Chunen</label><input type="date" class="fi" value="${S.attDate}" onchange="S.attDate=this.value;uc()"/></div>
+    <div class="row" style="flex-wrap:wrap;gap:6px">
+      <button onclick="mAllAtt('present')" class="btn bsg" style="font-size:12px">✅ Sab Hazir</button>
+      <button onclick="mAllAtt('absent')" class="btn bsr" style="font-size:12px">❌ Sab Ghair Hazir</button>
+    </div>
+  </div>
+  <div class="card"><div class="ch">Students List</div>
+  ${ms.length===0?noDt('👨‍🎓','No students'):`<div>
+    ${ms.map((s,i)=>{
+      const st=tda.find(a=>a.sId===s.id)?.st||null;
+      return `<div class="attrow">
+        <span>${i+1}. ${esc(s.n)}</span>
+        <div class="row">
+          ${st?bH(st):''}
+          <button onclick="mAtt('${s.id}','present')" class="abt">✓ Hazir</button>
+          <button onclick="mAtt('${s.id}','absent')" class="abt">✗ Ghair</button>
+        </div>
+      </div>`;
+    }).join('')}
+  </div>`}
+  </div></div>`;
+}
+
+function tRp(){
+  const mc=myCls();if(!mc)return noCls();
+  const ms=myStus();
+  
+  const mOptions = URMO.map((m,i)=>`<option value="${i+1}"${S.rM===i+1?' selected':''}>${m}</option>`).join('');
+  
+  return `<div class="gap">
+  <div><h1 class="pt">Monthly Report</h1></div>
+  <div style="display:flex;gap:10px">
+    <select class="fi" onchange="S.rM=+this.value;uc()">${mOptions}</select>
+    <button onclick="sRpts()" class="btn bb">💾 Save Karen</button>
+  </div>
+  <div class="card">
+    <div class="ovx"><table style="min-width:580px">
+    <thead><tr><th>Naam</th><th>Hasil Number</th><th>Kul Number</th><th>Grade</th><th>Remarks</th></tr></thead>
+    <tbody>${ms.map(s=>{
+      const r=S.reports.find(x=>x.sId===s.id&&x.cId===mc.id&&x.m===S.rM&&x.y===S.rY);
+      const mk=r?.mk??'';const tot=r?.tot||100;const g=mk!==''?grd(parseInt(mk)||0,tot):null;
+      return `<tr>
+        <td>${esc(s.n)}</td>
+        <td><input type="number" id="mk${s.id}" value="${mk}" oninput="upGr('${s.id}')" class="fi" style="width:70px"/></td>
+        <td><input type="number" id="tot${s.id}" value="${tot}" oninput="upGr('${s.id}')" class="fi" style="width:70px"/></td>
+        <td id="gr${s.id}">${g?g:''}</td>
+        <td><input id="rm${s.id}" value="${esc(r?.rem||'')}" class="fi"/></td>
+      </tr>`;
+    }).join('')}
+    </tbody></table></div>
+  </div></div>`;
+}
+
+function upGr(sid){
+  const m=parseInt(document.getElementById('mk'+sid)?.value)||0;
+  const t=parseInt(document.getElementById('tot'+sid)?.value)||100;
+  const el=document.getElementById('gr'+sid);
+  if(el) el.textContent=grd(m,t);
+}
+
+function stuBody(){
+  const d=S.modal.data||{};
+  return `<div><label class="fl">Student Naam *</label><input id="sn" class="fi" value="${esc(d.n||'')}"/></div>
+  <div><label class="fl">Walid ka Naam</label><input id="sfn" class="fi" value="${esc(d.fn||'')}"/></div>
+  <div><label class="fl">Roll Number</label><input id="srn" class="fi" value="${esc(d.rn||'')}"/></div>
+  <div><label class="fl">Student ID</label><input id="ssid" class="fi" value="${esc(d.sid||'')}"/></div>
+  <div><label class="fl">Phone</label><input id="sph" class="fi" value="${esc(d.ph||'')}"/></div>`;
+}
+
+function sStu(){
+  const d=S.modal.data;const mc=myCls();if(!mc)return;
+  const n=document.getElementById('sn').value.trim();
+  if(!n)return;
+  const obj={id:d?.id||uid(),cId:mc.id,n,fn:document.getElementById('sfn').value,rn:document.getElementById('srn').value,sid:document.getElementById('ssid').value,ph:document.getElementById('sph').value,ca:d?.ca||new Date().toISOString()};
+  S.students=d?S.students.map(s=>s.id===d.id?obj:s):[...S.students,obj];
+  sv.s();cm();toast('Saved Successfully ✓');uc();
+}
+
+function dStu(id){if(!confirm('Delete Student?'))return;S.students=S.students.filter(s=>s.id!==id);sv.s();uc();}
+function mAtt(sId,st){
+  const mc=myCls();if(!mc)return;
+  const ex=S.att.find(a=>a.sId===sId&&a.cId===mc.id&&a.date===S.attDate);
+  if(ex)S.att=S.att.map(a=>a.id===ex.id?{...a,st}:a);
+  else S.att=[...S.att,{id:uid(),sId,cId:mc.id,date:S.attDate,st,by:S.user.id,at:new Date().toISOString()}];
+  sv.a();uc();
+}
+function mAllAtt(st){
+  const mc=myCls();if(!mc)return;const ms=myStus();
+  S.att=[...S.att.filter(a=>!(a.cId===mc.id&&a.date===S.attDate)),...ms.map(s=>({id:uid(),sId:s.id,cId:mc.id,date:S.attDate,st,by:S.user.id,at:new Date().toISOString()}))];
+  sv.a();uc();
+}
+function sRpts(){
+  const mc=myCls();if(!mc)return;const ms=myStus();
+  const base=S.reports.filter(r=>!(r.cId===mc.id&&r.m===S.rM&&r.y===S.rY));
+  const add=[];
+  ms.forEach(s=>{
+    const mv=document.getElementById('mk'+s.id)?.value;if(mv===''||mv===undefined)return;
+    const m=parseInt(mv)||0;const t=parseInt(document.getElementById('tot'+s.id)?.value)||100;
+    const rem=document.getElementById('rm'+s.id)?.value||'';
+    add.push({id:uid(),sId:s.id,cId:mc.id,m:S.rM,y:S.rY,mk:m,tot:t,gr:grd(m,t),rem,by:S.user.id,ca:new Date().toISOString()});
+  });
+  S.reports=[...base,...add];sv.r();toast('Reports Saved ✓');
+}
+
+async function init(){
+  const savedUser = sessionStorage.getItem('loggedInUser');
+  if(!savedUser) { window.location.href = 'index.html'; return; }
+  S.user = JSON.parse(savedUser);
+  if(S.user.role !== 'teacher') { window.location.href = 'index.html'; return; }
+
+  S.classes = (await db.get(K.C)) || [];
+  S.students = (await db.get(K.S)) || [];
+  S.att = (await db.get(K.A)) || [];
+  S.reports = (await db.get(K.R)) || [];
+  render();
+}
+init();
+</script>
+</body>
+</html>

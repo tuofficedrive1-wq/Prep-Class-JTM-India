@@ -3,33 +3,25 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
-<title>Student Management System</title>
+<title>Student Management System - Admin</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f1f5f9;color:#1e293b}
 input,select,textarea,button{font-family:inherit}
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:4px}
-
-/* SIDEBAR */
 .sb{position:fixed;top:0;left:0;bottom:0;z-index:30;background:#0f172a;color:#fff;display:flex;flex-direction:column;transition:width .2s;overflow:hidden}
 .sb-on{width:250px}.sb-off{width:0}
 .nb{width:100%;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:none;background:transparent;color:#64748b;font-size:13px;font-weight:500;text-align:left;cursor:pointer;white-space:nowrap;transition:all .15s}
 .nb:hover{background:#1e293b;color:#fff}
 .nb.on{background:#2563eb;color:#fff}
-
-/* CARDS */
 .card{background:#fff;border-radius:14px;border:1px solid #e2e8f0;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,.05)}
 .cp{padding:16px}
 .ch{padding:12px 18px;border-bottom:1px solid #f1f5f9}
-
-/* FORMS */
 .fi{width:100%;padding:9px 12px;border:1px solid #e2e8f0;border-radius:10px;font-size:13px;background:#fff;transition:all .2s}
 .fi:focus{outline:none;border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.12)}
 .fl{font-size:11px;font-weight:600;color:#475569;display:block;margin-bottom:5px;text-transform:uppercase;letter-spacing:.3px}
 .ferr{font-size:11px;color:#dc2626;margin-top:3px;display:none}
-
-/* BUTTONS */
 .btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border:none;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;font-family:inherit;transition:all .15s}
 .btn:hover{opacity:.88}
 .bb{background:#2563eb;color:#fff}
@@ -39,32 +31,20 @@ input,select,textarea,button{font-family:inherit}
 .bsb{background:#eff6ff;color:#2563eb}
 .bsr{background:#fef2f2;color:#dc2626}
 .bsg{background:#f0fdf4;color:#16a34a}
-
-/* TABLE */
 table{width:100%;border-collapse:collapse}
 th{font-size:11px;font-weight:600;color:#64748b;text-align:left;padding:9px 16px;background:#f8fafc;text-transform:uppercase;letter-spacing:.3px}
 td{padding:11px 16px;font-size:13px;border-top:1px solid #f8fafc;color:#334155}
 tr:hover td{background:#fafcff}
-
-/* BADGES */
 .badge{display:inline-flex;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600}
-
-/* PROGRESS */
 .prog{width:100%;height:6px;background:#f1f5f9;border-radius:4px;overflow:hidden}
 .pbar{height:100%;border-radius:4px;transition:width .3s}
-
-/* MODAL */
 .mov{position:fixed;inset:0;background:rgba(15,23,42,.5);display:flex;align-items:flex-end;justify-content:center;z-index:50;padding:12px;backdrop-filter:blur(2px)}
 @media(min-width:600px){.mov{align-items:center}}
 .mbox{background:#fff;border-radius:20px;width:100%;max-width:480px;max-height:92vh;display:flex;flex-direction:column;box-shadow:0 25px 60px rgba(0,0,0,.25)}
 .mh{display:flex;justify-content:space-between;align-items:center;padding:16px 20px;border-bottom:1px solid #f1f5f9;flex-shrink:0}
 .mb{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:14px}
 .mf{display:flex;gap:10px;padding:16px 20px;border-top:1px solid #f1f5f9;flex-shrink:0}
-
-/* TOAST */
 #toast{position:fixed;bottom:20px;right:20px;z-index:999;display:none;align-items:center;gap:8px;padding:12px 18px;border-radius:12px;color:#fff;font-size:13px;font-weight:600;box-shadow:0 8px 25px rgba(0,0,0,.2)}
-
-/* LAYOUT */
 .ov{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:20}
 .av{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0}
 .nodata{padding:56px 20px;text-align:center;color:#94a3b8}
@@ -79,29 +59,17 @@ tr:hover td{background:#fafcff}
 .pt{font-size:20px;font-weight:700;color:#1e293b}
 .ps{font-size:12px;color:#64748b;margin-top:4px}
 .warn{background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:8px 12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
-
-/* ATT BUTTONS */
 .abt{padding:6px 11px;border-radius:8px;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
-
-/* STAT BOX */
 .stbox{background:#fff;border-radius:14px;padding:16px;border:1px solid #e2e8f0;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .stnum{font-size:28px;font-weight:700;color:#1e293b}
 .stlbl{font-size:11px;color:#64748b;margin-top:3px;font-weight:500}
-
-/* TEACHER BANNER */
 .tbanner{background:linear-gradient(135deg,#1d4ed8,#4338ca);border-radius:16px;padding:22px;color:#fff}
 .tbcls{font-size:24px;font-weight:800}
 .tbsub{font-size:12px;color:#bfdbfe;margin-top:6px}
 .tbstat{background:rgba(255,255,255,.15);border-radius:10px;padding:11px 15px;min-width:90px}
-
-/* STUDENT CARD */
 .stucard{background:#fff;border-radius:12px;border:1px solid #e2e8f0;padding:14px;display:flex;align-items:center;gap:12px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
 .stuav{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0}
-
-/* ATT STUDENT ROW */
 .attrow{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-top:1px solid #f8fafc;flex-wrap:wrap;gap:8px}
-
-/* GRADE */
 .grbox{display:inline-flex;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700}
 </style>
 </head>
@@ -110,18 +78,17 @@ tr:hover td{background:#fafcff}
 <div id="mroot"></div>
 <div id="toast"></div>
 
+<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
+<!-- Shared Config -->
+<script src="firebase-config.js"></script>
 
 <script>
-// ═══ HELPERS ═══════════════════════════════════════════════════════
 const uid=()=>'x'+Date.now()+Math.random().toString(36).slice(2,5);
 const tod=()=>new Date().toISOString().slice(0,10);
 const fD=d=>{try{return new Date(d+'T12:00').toLocaleDateString('en-PK',{day:'2-digit',month:'short',year:'numeric'});}catch{return d;}};
 const fDlong=d=>{try{return new Date(d+'T12:00').toLocaleDateString('ur-PK',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}catch{return d;}};
-const grd=(m,t)=>{const p=m/t*100;return p>=90?'A+':p>=80?'A':p>=65?'B':p>=50?'C':p>=40?'D':'F';};
-const gBg=g=>g==='A+'||g==='A'?'#dcfce7':g==='B'?'#dbeafe':g==='C'?'#fef3c7':'#fee2e2';
-const gCl=g=>g==='A+'||g==='A'?'#15803d':g==='B'?'#1d4ed8':g==='C'?'#d97706':'#dc2626';
 const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const pct=(n,d)=>d?Math.round(n/d*100):0;
 const ADMIN={id:'ar',name:'Admin',username:'admin',password:'admin@123',role:'admin',phone:'',ca:new Date().toISOString()};
@@ -129,57 +96,18 @@ const CNAMES=['Prep','Nursery','KG','Grade 1','Grade 2','Grade 3','Grade 4','Gra
 const SECS=['A','B','C','D','E','F'];
 const URMO=['جنوری','فروری','مارچ','اپریل','مئی','جون','جولائی','اگست','ستمبر','اکتوبر','نومبر','دسمبر'];
 const COLORS=['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#14b8a6','#f97316','#6366f1'];
-const EMOJIS=['😊','🌟','📚','✨','🎯','🏆','🌈','💡','🎨','🚀'];
+const bH=s=>{const m={present:{bg:'#dcfce7',c:'#15803d',l:'✓ Hazir'},absent:{bg:'#fee2e2',c:'#dc2626',l:'✗ Ghair Hazir'},late:{bg:'#fef3c7',c:'#d97706',l:'⏰ Der Se'}};const x=m[s]||{bg:'#f1f5f9',c:'#64748b',l:s};return `<span class="badge" style="background:${x.bg};color:${x.c}">${x.l}</span>`;};
+const noDt=(icon,msg)=>`<div class="nodata"><div style="font-size:44px;margin-bottom:12px">${icon}</div><p style="font-size:14px;font-weight:500">${msg}</p></div>`;
 
-// ═══ FIREBASE STORAGE ═════════════════════════════════════════════════
-const firebaseConfig = {
-  apiKey: "AIzaSyD5u8n3Q9oEfs80kM7ahLh9OC9KrlB2k0o",
-  authDomain: "prep-class-cbbea.firebaseapp.com",
-  projectId: "prep-class-cbbea",
-  storageBucket: "prep-class-cbbea.firebasestorage.app",
-  messagingSenderId: "477765744456",
-  appId: "1:477765744456:web:8fa15359bb9bb10ca0a57d",
-  measurementId: "G-J9QMNVWQHV"
-};
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-const fdb = firebase.firestore();
-
-const K={U:'s4u',C:'s4c',S:'s4s',A:'s4a',R:'s4r'};
-
-// Naya db object jo localStorage ki jagah Firestore use karega
-const db={
-  get: async (k) => {
-    try {
-      const doc = await fdb.collection('dashboardData').doc(k).get();
-      return doc.exists ? doc.data().list : null;
-    } catch(e) {
-      console.error("Firebase se data lane mein masla:", e);
-      return null;
-    }
-  },
-  set: (k,v) => {
-    try {
-      fdb.collection('dashboardData').doc(k).set({list: v});
-    } catch(e) {
-      console.error("Firebase par data save karne mein masla:", e);
-    }
-  }
-};
-
-// ═══ STATE ═══════════════════════════════════════════════════════════
 let S={
   user:null,page:'ov',side:false,
   users:[],classes:[],students:[],att:[],reports:[],
-  q:'',attDate:tod(),attCls:'',attView:'day',
+  q:'',attDate:tod(),attCls:'',
   rM:new Date().getMonth()+1,rY:new Date().getFullYear(),rCls:'',clsF:'',
-  modal:{show:false,type:'',data:null},
-  stuView:'table'
+  modal:{show:false,type:'',data:null}
 };
 const sv={u:()=>db.set(K.U,S.users),c:()=>db.set(K.C,S.classes),s:()=>db.set(K.S,S.students),a:()=>db.set(K.A,S.att),r:()=>db.set(K.R,S.reports)};
 
-// ═══ TOAST ═══════════════════════════════════════════════════════════
 let _tt;
 function toast(msg,type){
   const el=document.getElementById('toast');
@@ -188,17 +116,16 @@ function toast(msg,type){
   clearTimeout(_tt);_tt=setTimeout(()=>el.style.display='none',3000);
 }
 
-// ═══ MODAL ════════════════════════════════════════════════════════════
 function om(type,dj){S.modal={show:true,type,data:dj?JSON.parse(dj):null};rm();}
 function cm(){S.modal={show:false,type:'',data:null};rm();}
 function rm(){document.getElementById('mroot').innerHTML=S.modal.show?modalHTML():'';}
 
 function modalHTML(){
   const{type:t,data:d}=S.modal;
-  const TIT={cls:d?'Class Edit':'Nayi Class',tea:d?'Teacher Edit':'Naya Teacher',muf:d?'Mufattish Edit':'Naya Mufattish',stu:d?'Student Edit':'Naya Student'};
-  const FN={cls:'sCls()',tea:'sUser()',muf:'sUser()',stu:'sStu()'};
-  const BD={cls:clsBody(),tea:userBody(),muf:userBody(),stu:stuBody()};
-  return`<div class="mov" onclick="if(event.target===this)cm()">
+  const TIT={cls:d?'Class Edit':'Nayi Class',tea:d?'Teacher Edit':'Naya Teacher',muf:d?'Mufattish Edit':'Naya Mufattish'};
+  const FN={cls:'sCls()',tea:'sUser()',muf:'sUser()'};
+  const BD={cls:clsBody(),tea:userBody(),muf:userBody()};
+  return `<div class="mov" onclick="if(event.target===this)cm()">
   <div class="mbox">
     <div class="mh"><h3 style="font-size:15px;font-weight:700">${esc(TIT[t]||'')}</h3>
     <button onclick="cm()" style="background:none;border:none;font-size:20px;color:#94a3b8;cursor:pointer;line-height:1">×</button></div>
@@ -210,15 +137,8 @@ function modalHTML(){
   </div></div>`;
 }
 
-// ═══ RENDER ═══════════════════════════════════════════════════════════
-function render(){document.getElementById('root').innerHTML=S.user?dashHTML():loginHTML();rm();}
-function navTo(p){S.page=p;S.side=false;S.q='';uc();}
-function tgSide(){S.side=!S.side;const sb=document.getElementById('sb');if(sb)sb.className='sb '+(S.side?'sb-on':'sb-off');const ov=document.getElementById('sov');if(ov)ov.style.display=S.side?'block':'none';}
-function logout(){S.user=null;S.page='ov';render();}
-
-// ═══ LOGIN ════════════════════════════════════════════════════════════
 function loginHTML(){
-  return`<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 50%,#312e81 100%)">
+  return `<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:16px;background:linear-gradient(135deg,#0f172a 0%,#1e3a8a 50%,#312e81 100%)">
   <div style="width:100%;max-width:400px">
     <div style="text-align:center;margin-bottom:28px">
       <div style="width:72px;height:72px;background:rgba(255,255,255,.1);border:2px solid rgba(255,255,255,.2);border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;font-size:32px">🎓</div>
@@ -246,63 +166,47 @@ function loginHTML(){
         <div id="lerr" style="display:none;background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:10px 14px;color:#dc2626;font-size:12px;font-weight:500"></div>
         <button onclick="dLogin()" class="btn bb" style="width:100%;justify-content:center;padding:12px;font-size:14px">Login Karen →</button>
       </div>
-      <div style="margin-top:20px;padding-top:16px;border-top:1px solid #f1f5f9">
-        <p style="font-size:11px;color:#94a3b8;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px">Demo Logins</p>
-        <div style="display:flex;flex-direction:column;gap:6px">
-          <div style="background:#f8fafc;border-radius:8px;padding:8px 12px;font-size:12px;color:#475569">🔑 Admin: <b>admin</b> / <b>admin@123</b></div>
-          <div style="background:#f8fafc;border-radius:8px;padding:8px 12px;font-size:12px;color:#475569">👨‍🏫 Teacher: Admin ne jo banaya</div>
-          <div style="background:#f8fafc;border-radius:8px;padding:8px 12px;font-size:12px;color:#475569">🔍 Mufattish: Admin ne jo banaya</div>
-        </div>
-      </div>
     </div>
   </div></div>`;
 }
-function dLogin(){
-  const un=document.getElementById('lun').value.trim();
-  const pw=document.getElementById('lpw').value;
-  const err=document.getElementById('lerr');
+
+function dLogin() {
+  const un = document.getElementById('lun').value.trim();
+  const pw = document.getElementById('lpw').value;
+  const err = document.getElementById('lerr');
+  if (!un || !pw) { err.textContent = 'Username aur password dono zaruri hain'; err.style.display = 'block'; return; }
   
-  if(!un||!pw){
-    err.textContent='Username aur password dono zaruri hain';
-    err.style.display='block';
-    return;
-  }
-  
-  // Yahan logic theek ki gayi hai taake Admin (username/password) 
-  // aur Teacher (un/pw) dono login kar sakein 👇
   const f = S.users.find(u => 
     (u.username === un || u.un === un) && 
     (u.password === pw || u.pw === pw)
   );
   
-  if(f){
-    S.user=f;
-    S.page='ov';
-    render();
-  }
-  else{
-    err.textContent='Galat username ya password — dobara koshish karen';
-    err.style.display='block';
+  if (f) {
+    sessionStorage.setItem('loggedInUser', JSON.stringify(f));
+    if (f.role === 'admin') {
+      S.user = f;
+      S.page = 'ov';
+      render();
+    } else if (f.role === 'teacher') {
+      window.location.href = 'teacher.html';
+    } else if (f.role === 'mufattish') {
+      window.location.href = 'mufattish.html';
+    }
+  } else {
+    err.textContent = 'Galat username ya password — dobara koshish karen'; err.style.display = 'block';
   }
 }
 
-// ═══ DASH LAYOUT ══════════════════════════════════════════════════════
+function render(){document.getElementById('root').innerHTML=S.user?dashHTML():loginHTML();rm();}
+function navTo(p){S.page=p;S.side=false;S.q='';uc();}
+function tgSide(){S.side=!S.side;const sb=document.getElementById('sb');if(sb)sb.className='sb '+(S.side?'sb-on':'sb-off');const ov=document.getElementById('sov');if(ov)ov.style.display=S.side?'block':'none';}
+function logout(){sessionStorage.removeItem('loggedInUser');S.user=null;S.page='ov';render();}
+
 function dashHTML(){
-  const role=S.user.role;
-  
-  // Yahan naya uName variable add kiya gaya hai jo dono tarah ke naam utha lega
-  const uName = S.user.name || S.user.nm || 'User'; 
-  
-  const rc=role==='admin'?'#3b82f6':role==='teacher'?'#10b981':'#8b5cf6';
-  const rl=role==='admin'?'Administrator':role==='teacher'?'Teacher':'Mufattish';
+  const uName = S.user.name || S.user.nm || 'Admin';
   const navA=[{p:'ov',i:'📊',l:'Dashboard'},{p:'cl',i:'🏫',l:'Prep Classes'},{p:'te',i:'👨‍🏫',l:'Teachers'},{p:'mu',i:'🔍',l:'Mufattish'},{p:'st',i:'👨‍🎓',l:'Students'},{p:'at',i:'📅',l:'Attendance'},{p:'rp',i:'📈',l:'Reports'}];
-  const navT=[{p:'ov',i:'📊',l:'Mera Dashboard'},{p:'st',i:'👨‍🎓',l:'Students'},{p:'at',i:'📅',l:'Hazri'},{p:'rp',i:'📈',l:'Monthly Report'}];
-  const navM=[{p:'ov',i:'📊',l:'Dashboard'},{p:'cl',i:'🏫',l:'Meri Classes'},{p:'at',i:'📅',l:'Attendance'},{p:'rp',i:'📈',l:'Reports'}];
-  const nav=role==='admin'?navA:role==='teacher'?navT:navM;
-  const nh=nav.map(({p,i,l})=>`<button class="nb${S.page===p?' on':''}" onclick="navTo('${p}')"><span style="font-size:16px;flex-shrink:0">${i}</span>${l}</button>`).join('');
-  const content=role==='admin'?aC():role==='teacher'?tC():mC();
-  
-  return`<div id="sov" onclick="tgSide()" style="display:${S.side?'block':'none'}" class="ov"></div>
+  const nh=navA.map(({p,i,l})=>`<button class="nb${S.page===p?' on':''}" onclick="navTo('${p}')"><span style="font-size:16px;flex-shrink:0">${i}</span>${l}</button>`).join('');
+  return `<div id="sov" onclick="tgSide()" style="display:${S.side?'block':'none'}" class="ov"></div>
   <div style="display:flex;height:100vh;overflow:hidden">
     <aside id="sb" class="sb ${S.side?'sb-on':'sb-off'}">
       <div style="padding:16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px;flex-shrink:0">
@@ -310,8 +214,8 @@ function dashHTML(){
         <div><p style="margin:0;font-size:14px;font-weight:700;white-space:nowrap">Student Mgmt</p><p style="margin:0;font-size:10px;color:#475569;white-space:nowrap">System v4.0</p></div>
       </div>
       <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px;flex-shrink:0">
-        <div class="av" style="background:${rc}33;color:${rc};font-size:15px">${esc(uName[0].toUpperCase())}</div>
-        <div style="min-width:0"><p style="margin:0;font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(uName)}</p><p style="margin:0;font-size:10px;color:#475569">${rl}</p></div>
+        <div class="av" style="background:#3b82f633;color:#3b82f6;font-size:15px">${esc(uName[0].toUpperCase())}</div>
+        <div style="min-width:0"><p style="margin:0;font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(uName)}</p><p style="margin:0;font-size:10px;color:#475569">Administrator</p></div>
       </div>
       <nav style="flex:1;padding:10px;overflow-y:auto;display:flex;flex-direction:column;gap:2px">${nh}</nav>
       <div style="padding:10px;border-top:1px solid rgba(255,255,255,.08);flex-shrink:0">
@@ -325,32 +229,30 @@ function dashHTML(){
           <p style="font-size:12px;color:#64748b">${fDlong(tod())}</p>
         </div>
         <div class="row">
-          <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:${rc}15;color:${rc}">${rl}</span>
-          <div class="av" style="background:${rc}20;color:${rc}">${esc(uName[0].toUpperCase())}</div>
+          <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:#3b82f615;color:#3b82f6">Administrator</span>
+          <div class="av" style="background:#3b82f620;color:#3b82f6">${esc(uName[0].toUpperCase())}</div>
         </div>
       </header>
-      <div id="ct" style="flex:1;overflow-y:auto;padding:16px">${content}</div>
+      <div id="ct" style="flex:1;overflow-y:auto;padding:16px">${aC()}</div>
     </div>
   </div>`;
 }
-function uc(){const el=document.getElementById('ct');if(!el)return render();const r=S.user.role;el.innerHTML=r==='admin'?aC():r==='teacher'?tC():mC();}
 
-// ══════════════════════════════════════════════════════════════════════
-// ADMIN PAGES
-// ══════════════════════════════════════════════════════════════════════
+function uc(){const el=document.getElementById('ct');if(!el)return render();el.innerHTML=aC();}
+
 function aC(){switch(S.page){case'cl':return aCls();case'te':return aTe();case'mu':return aMu();case'st':return aSt();case'at':return aAt();case'rp':return aRp();default:return aOv();}}
 
 function aOv(){
   const te=S.users.filter(u=>u.role==='teacher');
   const mu=S.users.filter(u=>u.role==='mufattish');
   const td=tod(),tda=S.att.filter(a=>a.date===td);
-  const prs=tda.filter(a=>a.status==='present').length;
-  const abs=tda.filter(a=>a.status==='absent').length;
+  const prs=tda.filter(a=>a.status==='present'||a.st==='present').length;
+  const abs=tda.filter(a=>a.status==='absent'||a.st==='absent').length;
   const p=pct(prs,S.students.length);
   const unass=S.classes.filter(c=>!c.tId||!c.mId);
   const recent=[...S.att].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,8);
   const c=2*Math.PI*15.9;const da=c*(p/100)+' '+c*(1-p/100);
-  return`<div class="gap">
+  return `<div class="gap">
   <div><h1 class="pt">Admin Dashboard</h1><p class="ps">System ka pura jaiza</p></div>
   <div class="ga">${[['🏫',S.classes.length,'Prep Classes','#1d4ed8'],['👨‍🏫',te.length,'Teachers','#15803d'],['🔍',mu.length,'Mufattish','#7c3aed'],['👨‍🎓',S.students.length,'Students','#c2410c']].map(([e,v,l,c])=>`
   <div class="stbox"><div style="font-size:26px;margin-bottom:10px">${e}</div><div class="stnum" style="color:${c}">${v}</div><div class="stlbl">${l}</div></div>`).join('')}</div>
@@ -381,28 +283,29 @@ function aOv(){
   </div>
   ${recent.length?`<div class="card"><div class="ch"><p style="font-size:13px;font-weight:700">Haliya Hazri</p></div>
   <div class="ovx"><table style="min-width:380px"><thead><tr><th>Student</th><th>Tarikh</th><th>Status</th></tr></thead>
-  <tbody>${recent.map(r=>{const s=S.students.find(x=>x.id===r.sId);return`<tr><td><b>${esc(s?.n||'—')}</b></td><td>${fD(r.date)}</td><td>${bH(r.st)}</td></tr>`;}).join('')}</tbody></table></div></div>`:''}
-  </div>`;}
+  <tbody>${recent.map(r=>{const s=S.students.find(x=>x.id===r.sId);return `<tr><td><b>${esc(s?.n||'—')}</b></td><td>${fD(r.date)}</td><td>${bH(r.st)}</td></tr>`;}).join('')}</tbody></table></div></div>`:''}
+  </div>`;
+}
 
-function aCls(){
+function aCls() {
   const te=S.users.filter(u=>u.role==='teacher');
   const mu=S.users.filter(u=>u.role==='mufattish');
   const q=S.q.toLowerCase();
   const list=S.classes.filter(c=>!q||`${c.n}${c.s}`.toLowerCase().includes(q));
-  return`<div class="gap">
+  return `<div class="gap">
   <div class="bw"><div><h1 class="pt">Prep Classes</h1><p class="ps">Classes manage karen</p></div><button class="btn bb" onclick="om('cls',null)">➕ Nayi Class</button></div>
   <div style="position:relative"><span style="position:absolute;left:11px;top:50%;transform:translateY(-50%)">🔎</span><input class="fi" placeholder="Class talash..." value="${esc(S.q)}" oninput="S.q=this.value;uc()" style="padding-left:34px"/></div>
   ${list.length===0?noDt('🏫','Abhi koi class nahi'):`<div class="g3">${list.map(c=>{
     const t=te.find(x=>x.id===c.tId);const m=mu.find(x=>x.id===c.mId);
     const sc=S.students.filter(s=>s.cId===c.id).length;const cj=esc(JSON.stringify(c));
-    return`<div class="card">
+    return `<div class="card">
       <div style="background:linear-gradient(135deg,#1d4ed8,#4338ca);padding:16px;display:flex;justify-content:space-between;align-items:flex-start">
         <div><h3 style="color:#fff;font-weight:800;font-size:19px;margin:0">${esc(c.n)} <span style="color:#bfdbfe;font-weight:400">${esc(c.s)}</span></h3>
         <p style="color:#93c5fd;font-size:11px;margin-top:5px">${esc(c.timing||'—')}${c.room?' | '+esc(c.room):''}</p></div>
         <span style="background:rgba(255,255,255,.2);border-radius:8px;padding:4px 10px;color:#fff;font-size:13px;font-weight:700">${sc}</span>
       </div>
       <div style="padding:14px;display:flex;flex-direction:column;gap:10px">
-        ${[['👨‍🏫','Teacher',t?.nm,!!t],['🔍','Mufattish',m?.nm,!!m]].map(([e,lbl,val,ok])=>`
+        ${[['👨‍🏫','Teacher',t?.nm||t?.name,!!t],['🔍','Mufattish',m?.nm||m?.name,!!m]].map(([e,lbl,val,ok])=>`
         <div class="row"><div style="width:8px;height:8px;border-radius:50%;background:${ok?'#10b981':'#ef4444'};flex-shrink:0"></div>
         <div><p style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase">${lbl}</p>
         <p style="font-size:12px;font-weight:600;color:${ok?'#1e293b':'#ef4444'};margin-top:1px">${ok?esc(val):'⚠ Assign nahi'}</p></div></div>`).join('')}
@@ -411,52 +314,55 @@ function aCls(){
           <button class="btn bsr" style="font-size:12px" onclick="dCls('${c.id}')">🗑</button>
         </div>
       </div></div>`;}).join('')}</div>`}
-  </div>`;}
+  </div>`;
+}
 
-function aTe(){
+function aTe() {
   const q=S.q.toLowerCase();
-  const list=S.users.filter(u=>u.role==='teacher').filter(t=>!q||[t.nm,t.un].some(v=>v?.toLowerCase().includes(q)));
-  return`<div class="gap">
+  const list=S.users.filter(u=>u.role==='teacher').filter(t=>!q||[(t.nm||t.name), (t.un||t.username)].some(v=>v?.toLowerCase().includes(q)));
+  return `<div class="gap">
   <div class="bw"><div><h1 class="pt">Teachers</h1><p class="ps">Teacher accounts manage karen</p></div><button class="btn bg" onclick="om('tea',null)">➕ Naya Teacher</button></div>
   <div style="position:relative"><span style="position:absolute;left:11px;top:50%;transform:translateY(-50%)">🔎</span><input class="fi" placeholder="Teacher talash..." value="${esc(S.q)}" oninput="S.q=this.value;uc()" style="padding-left:34px"/></div>
   <div class="card">
     ${list.length===0?noDt('👨‍🏫','Abhi koi teacher nahi'):`
     <div class="ovx"><table style="min-width:600px">
     <thead><tr><th>Naam</th><th>Username</th><th>Password</th><th>Assigned Class</th><th>Phone</th><th style="text-align:right">Actions</th></tr></thead>
-    <tbody>${list.map(t=>{const cls=S.classes.find(c=>c.tId===t.id);const tj=esc(JSON.stringify(t));return`
-    <tr><td><div class="row"><div class="av" style="background:#dcfce7;color:#15803d;font-size:13px">${t.nm[0].toUpperCase()}</div><div><p style="font-weight:600">${esc(t.nm)}</p><p style="font-size:11px;color:#64748b">${esc(t.un)}</p></div></div></td>
-    <td style="font-family:monospace;color:#475569;font-size:12px">${esc(t.un)}</td>
-    <td style="font-family:monospace;color:#94a3b8;font-size:12px">${esc(t.pw)}</td>
+    <tbody>${list.map(t=>{const cls=S.classes.find(c=>c.tId===t.id);const tj=esc(JSON.stringify(t));const nameDisplay=t.nm||t.name;const unDisplay=t.un||t.username;const pwDisplay=t.pw||t.password;return `
+    <tr><td><div class="row"><div class="av" style="background:#dcfce7;color:#15803d;font-size:13px">${nameDisplay[0].toUpperCase()}</div><div><p style="font-weight:600">${esc(nameDisplay)}</p><p style="font-size:11px;color:#64748b">${esc(unDisplay)}</p></div></div></td>
+    <td style="font-family:monospace;color:#475569;font-size:12px">${esc(unDisplay)}</td>
+    <td style="font-family:monospace;color:#94a3b8;font-size:12px">${esc(pwDisplay)}</td>
     <td>${cls?`<span class="badge" style="background:#dbeafe;color:#1d4ed8">${esc(cls.n)} ${esc(cls.s)}</span>`:'<span style="color:#94a3b8">—</span>'}</td>
     <td style="color:#94a3b8;font-size:12px">${esc(t.ph||'—')}</td>
     <td><div class="row" style="justify-content:flex-end"><button class="btn bsb" style="padding:6px 10px;font-size:12px" onclick="om('tea','${tj}')">✏</button><button class="btn bsr" style="padding:6px 10px;font-size:12px" onclick="dUser('${t.id}')">🗑</button></div></td></tr>`;}).join('')}
     </tbody></table></div>`}
-  </div></div>`;}
+  </div></div>`;
+}
 
-function aMu(){
+function aMu() {
   const q=S.q.toLowerCase();
-  const list=S.users.filter(u=>u.role==='mufattish').filter(m=>!q||[m.nm,m.un].some(v=>v?.toLowerCase().includes(q)));
-  return`<div class="gap">
+  const list=S.users.filter(u=>u.role==='mufattish').filter(m=>!q||[(m.nm||m.name),(m.un||m.username)].some(v=>v?.toLowerCase().includes(q)));
+  return `<div class="gap">
   <div class="bw"><div><h1 class="pt">Mufattish</h1><p class="ps">Mufattish accounts manage karen</p></div><button class="btn bp" onclick="om('muf',null)">➕ Naya Mufattish</button></div>
   <div style="position:relative"><span style="position:absolute;left:11px;top:50%;transform:translateY(-50%)">🔎</span><input class="fi" placeholder="Mufattish talash..." value="${esc(S.q)}" oninput="S.q=this.value;uc()" style="padding-left:34px"/></div>
   <div class="card">
     ${list.length===0?noDt('🔍','Abhi koi Mufattish nahi'):`
     <div class="ovx"><table style="min-width:600px">
     <thead><tr><th>Naam</th><th>Username</th><th>Password</th><th>Assigned Classes</th><th>Phone</th><th style="text-align:right">Actions</th></tr></thead>
-    <tbody>${list.map(m=>{const ac=S.classes.filter(c=>c.mId===m.id);const mj=esc(JSON.stringify(m));return`
-    <tr><td><div class="row"><div class="av" style="background:#f3e8ff;color:#7c3aed;font-size:13px">${m.nm[0].toUpperCase()}</div><div><p style="font-weight:600">${esc(m.nm)}</p><p style="font-size:11px;color:#64748b">${esc(m.un)}</p></div></div></td>
-    <td style="font-family:monospace;color:#475569;font-size:12px">${esc(m.un)}</td>
-    <td style="font-family:monospace;color:#94a3b8;font-size:12px">${esc(m.pw)}</td>
+    <tbody>${list.map(m=>{const ac=S.classes.filter(c=>c.mId===m.id);const mj=esc(JSON.stringify(m));const nameDisplay=m.nm||m.name;const unDisplay=m.un||m.username;const pwDisplay=m.pw||m.password;return `
+    <tr><td><div class="row"><div class="av" style="background:#f3e8ff;color:#7c3aed;font-size:13px">${nameDisplay[0].toUpperCase()}</div><div><p style="font-weight:600">${esc(nameDisplay)}</p><p style="font-size:11px;color:#64748b">${esc(unDisplay)}</p></div></div></td>
+    <td style="font-family:monospace;color:#475569;font-size:12px">${esc(unDisplay)}</td>
+    <td style="font-family:monospace;color:#94a3b8;font-size:12px">${esc(pwDisplay)}</td>
     <td><div class="row" style="flex-wrap:wrap;gap:3px">${ac.length?ac.map(c=>`<span class="badge" style="background:#f3e8ff;color:#7c3aed">${esc(c.n)} ${esc(c.s)}</span>`).join(''):'<span style="color:#94a3b8">—</span>'}</div></td>
     <td style="color:#94a3b8;font-size:12px">${esc(m.ph||'—')}</td>
     <td><div class="row" style="justify-content:flex-end"><button class="btn bsb" style="padding:6px 10px;font-size:12px" onclick="om('muf','${mj}')">✏</button><button class="btn bsr" style="padding:6px 10px;font-size:12px" onclick="dUser('${m.id}')">🗑</button></div></td></tr>`;}).join('')}
     </tbody></table></div>`}
-  </div></div>`;}
+  </div></div>`;
+}
 
-function aSt(){
+function aSt() {
   const q=S.q.toLowerCase();
-  const list=S.students.filter(s=>(!S.clsF||s.cId===S.clsF)&&(!q||[s.n,s.fn,s.sid].some(v=>v?.toLowerCase().includes(q))));
-  return`<div class="gap">
+  const list = S.students.filter(s=>(!S.clsF||s.cId===S.clsF)&&(!q||[s.n,s.fn,s.sid].some(v=>v?.toLowerCase().includes(q))));
+  return `<div class="gap">
   <div><h1 class="pt">Students</h1><p class="ps">Teacher ne add kiya — Admin sirf dekh sakta hai</p></div>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px">
     <div style="position:relative"><span style="position:absolute;left:11px;top:50%;transform:translateY(-50%)">🔎</span><input class="fi" placeholder="Student talash..." value="${esc(S.q)}" oninput="S.q=this.value;uc()" style="padding-left:34px"/></div>
@@ -464,22 +370,23 @@ function aSt(){
   </div>
   <div class="card">
     <div class="ch row" style="justify-content:space-between"><span style="font-size:12px;font-weight:600;color:#475569">${list.length} students</span></div>
-    ${list.length===0?noDt('👨‍🎓',S.students.length===0?'Abhi koi student nahi — Teacher add karega':'Koi nateeja nahi'):`
+    ${list.length===0?noDt('👨‍🎓',S.students.length===0?'Abhi koi student nahi':'Koi nateeja nahi'):`
     <div class="ovx"><table style="min-width:500px">
     <thead><tr><th>#</th><th>Naam</th><th>Walid</th><th>Roll No</th><th>Class</th><th>Phone</th></tr></thead>
-    <tbody>${list.map((s,i)=>{const cls=S.classes.find(c=>c.id===s.cId);const clr=COLORS[i%COLORS.length];return`
+    <tbody>${list.map((s,i)=>{const cls=S.classes.find(c=>c.id===s.cId);const clr=COLORS[i%COLORS.length];return `
     <tr><td style="color:#94a3b8;font-weight:600">${i+1}</td>
     <td><div class="row"><div class="av" style="background:${clr}20;color:${clr};font-size:12px">${s.n[0].toUpperCase()}</div><b>${esc(s.n)}</b></div></td>
     <td style="color:#475569">${esc(s.fn||'—')}</td><td style="color:#64748b">${esc(s.rn||'—')}</td>
     <td>${cls?`<span class="badge" style="background:#dbeafe;color:#1d4ed8">${esc(cls.n)} ${esc(cls.s)}</span>`:'—'}</td>
     <td style="color:#94a3b8">${esc(s.ph||'—')}</td></tr>`;}).join('')}
     </tbody></table></div>`}
-  </div></div>`;}
+  </div></div>`;
+}
 
-function aAt(){
+function aAt() {
   const shown=S.attCls?S.classes.filter(c=>c.id===S.attCls):S.classes;
   const tda=S.att.filter(a=>a.date===S.attDate);
-  return`<div class="gap">
+  return `<div class="gap">
   <div><h1 class="pt">Attendance Report</h1><p class="ps">Teacher ne mark ki — Admin view</p></div>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px">
     <div><label class="fl">Tarikh</label><input type="date" class="fi" value="${S.attDate}" onchange="S.attDate=this.value;uc()"/></div>
@@ -491,32 +398,33 @@ function aAt(){
     const p=ca.filter(a=>a.st==='present').length;
     const ab=ca.filter(a=>a.st==='absent').length;
     const pp=pct(p,stu.length);
-    return`<div class="card"><div class="ch bw">
+    return `<div class="card"><div class="ch bw">
       <div><p style="font-size:14px;font-weight:700">${esc(cls.n)} ${esc(cls.s)}</p><p style="font-size:11px;color:#64748b;margin-top:2px">${ca.length}/${stu.length} mark kiye</p></div>
       <div class="row"><span class="badge" style="background:#dcfce7;color:#15803d">Hazir: ${p}</span><span class="badge" style="background:#fee2e2;color:#dc2626">Ghair: ${ab}</span><b style="font-size:14px">${pp}%</b></div>
     </div>
-    ${stu.slice(0,5).map(s=>{const r=ca.find(a=>a.sId===s.id);return`
+    ${stu.slice(0,5).map(s=>{const r=ca.find(a=>a.sId===s.id);return `
     <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 18px;border-top:1px solid #f8fafc">
       <span style="font-size:13px;font-weight:500">${esc(s.n)}</span>
       ${r?bH(r.st):'<span style="font-size:11px;color:#cbd5e1">mark nahi hua</span>'}
     </div>`;}).join('')}
     ${stu.length>5?`<p style="padding:7px 18px;font-size:11px;color:#94a3b8">aur ${stu.length-5} students...</p>`:''}
     </div>`;}).join('')}
-  </div>`;}
+  </div>`;
+}
 
-function aRp(){
+function aRp() {
   const shown=S.rCls?S.classes.filter(c=>c.id===S.rCls):S.classes;
   const ms=`${S.rY}-${String(S.rM).padStart(2,'0')}`;
-  const gS=cid=>{const ma=S.att.filter(a=>a.cId===cid&&a.date.startsWith(ms));const days=[...new Set(ma.map(a=>a.date))].length;const p=ma.filter(a=>a.st==='present').length;const n=S.students.filter(s=>s.cId===cid).length;return{days,p,n,pp:pct(p,n*days)};};
+  const gS=cid=>{const ma=S.att.filter(a=>a.cId===cid&&a.date.startsWith(ms));const days=[...new Set(ma.map(a=>a.date))].length;const p=ma.filter(a=>a.st==='present').length;const n=S.students.filter(s=>s.cId===cid).length;return {days,p,n,pp:pct(p,n*days)};};
   const rpts=S.reports.filter(r=>r.m===S.rM&&r.y===S.rY&&shown.some(c=>c.id===r.cId));
-  return`<div class="gap">
+  return `<div class="gap">
   <div><h1 class="pt">Monthly Reports</h1><p class="ps">Mahana tajzia</p></div>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px">
     <div><label class="fl">Mahina</label><select class="fi" onchange="S.rM=+this.value;uc()">${URMO.map((m,i)=>`<option value="${i+1}"${S.rM===i+1?' selected':''}>${m}</option>`).join('')}</select></div>
     <div><label class="fl">Saal</label><select class="fi" onchange="S.rY=+this.value;uc()">${[2024,2025,2026].map(y=>`<option${S.rY===y?' selected':''}>${y}</option>`).join('')}</select></div>
     <div><label class="fl">Class</label><select class="fi" onchange="S.rCls=this.value;uc()"><option value="">Tamam</option>${S.classes.map(c=>`<option value="${c.id}"${S.rCls===c.id?' selected':''}>${esc(c.n)} ${esc(c.s)}</option>`).join('')}</select></div>
   </div>
-  <div class="g3">${shown.map(cls=>{const{days,p,n,pp}=gS(cls.id);const col=pp>=75?'#10b981':pp>=50?'#f59e0b':'#ef4444';return`
+  <div class="g3">${shown.map(cls=>{const {days,p,n,pp}=gS(cls.id);const col=pp>=75?'#10b981':pp>=50?'#f59e0b':'#ef4444';return `
   <div class="scard"><div class="bw" style="margin-bottom:10px"><b style="font-size:14px">${esc(cls.n)} ${esc(cls.s)}</b><span style="font-size:16px;font-weight:800;color:${col}">${pp}%</span></div>
   <div class="prog" style="margin-bottom:8px"><div class="pbar" style="background:${col};width:${pp}%"></div></div>
   <p style="font-size:11px;color:#64748b">Din: ${days} | Hazir: ${p} | Students: ${n}</p></div>`;}).join('')}</div>
@@ -524,459 +432,30 @@ function aRp(){
   ${rpts.length===0?noDt('📋','Koi report nahi — Teacher fill karega'):`
   <div class="ovx"><table style="min-width:480px">
   <thead><tr><th>Student</th><th>Class</th><th>Marks</th><th>Grade</th><th>Remarks</th></tr></thead>
-  <tbody>${rpts.map(r=>{const s=S.students.find(x=>x.id===r.sId);const cls=S.classes.find(x=>x.id===r.cId);return`
+  <tbody>${rpts.map(r=>{const s=S.students.find(x=>x.id===r.sId);const cls=S.classes.find(x=>x.id===r.cId);return `
   <tr><td><b>${esc(s?.n||'—')}</b></td><td>${cls?`${esc(cls.n)} ${esc(cls.s)}`:'—'}</td>
   <td><b>${r.mk}/${r.tot}</b></td>
   <td><span class="grbox" style="background:${gBg(r.gr)};color:${gCl(r.gr)}">${r.gr}</span></td>
   <td style="color:#64748b">${esc(r.rem||'—')}</td></tr>`;}).join('')}
   </tbody></table></div>`}
-  </div></div>`;}
-
-// ══════════════════════════════════════════════════════════════════════
-// TEACHER DASHBOARD - COMPLETE
-// ══════════════════════════════════════════════════════════════════════
-function tC(){switch(S.page){case'st':return tStu();case'at':return tAtt();case'rp':return tRp();default:return tOv();}}
-function myCls(){return S.classes.find(c=>c.tId===S.user.id);}
-function myStus(){const mc=myCls();return mc?S.students.filter(s=>s.cId===mc.id):[];}
-
-// Teacher Overview
-function tOv(){
-  const mc=myCls();
-  if(!mc){return`<div style="display:flex;align-items:center;justify-content:center;height:70vh">
-    <div style="text-align:center;max-width:320px">
-      <div style="font-size:60px;margin-bottom:16px">📋</div>
-      <h2 style="font-size:20px;font-weight:700;color:#334155;margin-bottom:8px">Koi Class Assign Nahi</h2>
-      <p style="font-size:14px;color:#64748b;line-height:1.6">Admin ne abhi koi class assign nahi ki. Admin se rabta karen — woh aapko class assign kar denge.</p>
-      <div style="margin-top:16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px;font-size:12px;color:#15803d">
-        ✅ Admin login → Prep Classes → Class Select → Teacher Assign
-      </div>
-    </div></div>`;
-  }
-  const ms=myStus();const td=tod();
-  const tda=S.att.filter(a=>a.cId===mc.id&&a.date===td);
-  const prs=tda.filter(a=>a.st==='present').length;
-  const abs=tda.filter(a=>a.st==='absent').length;
-  const lt=tda.filter(a=>a.st==='late').length;
-  const pp=pct(prs,ms.length);
-  // Monthly attendance this month
-  const mn=new Date().getMonth()+1,yr=new Date().getFullYear();
-  const msStr=`${yr}-${String(mn).padStart(2,'0')}`;
-  const mAtt=S.att.filter(a=>a.cId===mc.id&&a.date.startsWith(msStr));
-  const mDays=[...new Set(mAtt.map(a=>a.date))].length;
-  const mPrs=mAtt.filter(a=>a.st==='present').length;
-  const mPp=pct(mPrs,ms.length*mDays);
-  const te=S.users.find(u=>u.id===S.user.id);
-  return`<div class="gap">
-  <div class="bw">
-    <div><h1 class="pt">As-salamu Alaykum! 👋</h1><p class="ps">${esc(S.user.nm)}'s Dashboard</p></div>
-    <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:8px 14px;font-size:12px;color:#15803d;font-weight:600">🟢 Active Teacher</div>
-  </div>
-
-  <!-- Class Banner -->
-  <div class="tbanner">
-    <div class="bw" style="margin-bottom:16px">
-      <div>
-        <p style="font-size:12px;color:#93c5fd;font-weight:600;text-transform:uppercase;letter-spacing:.5px">Aapki Assigned Class</p>
-        <h2 class="tbcls" style="margin-top:4px">${esc(mc.n)} <span style="color:#93c5fd;font-weight:400">${esc(mc.s)}</span></h2>
-        <div class="tbsub row" style="margin-top:8px;flex-wrap:wrap;gap:8px">
-          ${mc.timing?`<span>⏰ ${esc(mc.timing)}</span>`:''}
-          ${mc.room?`<span>📍 ${esc(mc.room)}</span>`:''}
-          ${mc.notes?`<span>📝 ${esc(mc.notes)}</span>`:''}
-        </div>
-      </div>
-    </div>
-    <div style="display:flex;flex-wrap:wrap;gap:10px">
-      ${[['👨‍🎓',ms.length,'Kul Students'],['✅',prs,'Aaj Hazir'],['❌',abs,'Ghair Hazir'],['⏰',lt,'Der Se'],['📊',pp+'%','Aaj %']].map(([e,v,l])=>`
-      <div class="tbstat"><p style="font-size:20px;font-weight:800">${v}</p><p style="font-size:10px;color:#bfdbfe;margin-top:2px">${l}</p></div>`).join('')}
-    </div>
-  </div>
-
-  <!-- Stats Row -->
-  <div class="ga">
-    <div class="stbox"><div style="font-size:24px;margin-bottom:8px">📅</div><div class="stnum">${mDays}</div><div class="stlbl">${URMO[mn-1]} Mein Din</div></div>
-    <div class="stbox"><div style="font-size:24px;margin-bottom:8px">📈</div><div class="stnum" style="color:${mPp>=75?'#15803d':mPp>=50?'#d97706':'#dc2626'}">${mPp}%</div><div class="stlbl">Mahana Hazri</div></div>
-    <div class="stbox"><div style="font-size:24px;margin-bottom:8px">✅</div><div class="stnum" style="color:#15803d">${mPrs}</div><div class="stlbl">Is Mahine Hazir</div></div>
-    <div class="stbox"><div style="font-size:24px;margin-bottom:8px">📋</div><div class="stnum" style="color:#7c3aed">${S.reports.filter(r=>r.cId===mc.id&&r.m===mn&&r.y===yr).length}</div><div class="stlbl">Reports Bhari Hain</div></div>
-  </div>
-
-  <!-- Quick Actions -->
-  <div class="card cp">
-    <p style="font-size:13px;font-weight:700;margin-bottom:12px;color:#0f172a">⚡ Quick Actions</p>
-    <div class="row" style="flex-wrap:wrap;gap:8px">
-      <button onclick="navTo('at')" class="btn bb" style="font-size:12px">📅 Aaj ki Hazri Lagao</button>
-      <button onclick="navTo('st')" class="btn bg" style="font-size:12px">👨‍🎓 Students Dekho</button>
-      <button onclick="navTo('rp')" class="btn bp" style="font-size:12px">📈 Report Fill Karo</button>
-      <button onclick="navTo('st');setTimeout(()=>om('stu',null),100)" class="btn bsb" style="font-size:12px">➕ Naya Student</button>
-    </div>
-  </div>
-
-  <!-- Today attendance preview -->
-  ${ms.length>0?`<div class="card">
-    <div class="ch bw">
-      <p style="font-size:13px;font-weight:700">Aaj ki Hazri — ${fD(td)}</p>
-      <span style="font-size:12px;color:#64748b">${tda.length}/${ms.length} mark kiye</span>
-    </div>
-    <div>${ms.slice(0,6).map((s,i)=>{const r=tda.find(a=>a.sId===s.id);const clr=COLORS[i%COLORS.length];return`
-    <div class="row" style="padding:10px 18px;border-top:1px solid #f8fafc;justify-content:space-between">
-      <div class="row"><div class="av" style="background:${clr}20;color:${clr};font-size:12px">${s.n[0].toUpperCase()}</div>
-      <div><p style="font-size:13px;font-weight:500">${esc(s.n)}</p><p style="font-size:11px;color:#94a3b8">${esc(s.fn||s.rn||'—')}</p></div></div>
-      ${r?bH(r.st):'<span style="font-size:11px;color:#cbd5e1">mark nahi hua</span>'}
-    </div>`;}).join('')}
-    ${ms.length>6?`<div style="padding:10px 18px;border-top:1px solid #f8fafc;text-align:center"><button onclick="navTo('at')" class="btn bsb" style="font-size:12px">Puri List Dekho →</button></div>`:''}
-    </div>
-  </div>`:''}
-  </div>`;}
-
-// Teacher: Students
-function tStu(){
-  const mc=myCls();if(!mc)return noCls();
-  const ms=myStus();const q=S.q.toLowerCase();
-  const list=ms.filter(s=>!q||[s.n,s.fn,s.sid].some(v=>v?.toLowerCase().includes(q)));
-  return`<div class="gap">
-  <div class="bw">
-    <div><h1 class="pt">Students</h1><p class="ps">${esc(mc.n)} ${esc(mc.s)} — ${ms.length} students</p></div>
-    <button class="btn bb" onclick="om('stu',null)">➕ Naya Student Add Karo</button>
-  </div>
-  <!-- Search + Stats -->
-  <div style="display:grid;grid-template-columns:1fr auto;gap:10px">
-    <div style="position:relative"><span style="position:absolute;left:11px;top:50%;transform:translateY(-50%)">🔎</span>
-    <input class="fi" placeholder="Naam, walid ka naam ya roll number se talash..." value="${esc(S.q)}" oninput="S.q=this.value;uc()" style="padding-left:34px"/></div>
-    <div class="row" style="gap:6px">
-      <span class="badge" style="background:#dbeafe;color:#1d4ed8">${ms.length} Total</span>
-    </div>
-  </div>
-
-  ${list.length===0?noDt('👨‍🎓',ms.length===0?'Abhi koi student nahi — Naya Student Add Karo button dabao':'Koi nateeja nahi mila'):`
-  <!-- Student Cards Grid -->
-  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px">
-    ${list.map((s,i)=>{
-      const clr=COLORS[i%COLORS.length];
-      const em=EMOJIS[i%EMOJIS.length];
-      const sj=esc(JSON.stringify(s));
-      // Attendance stats for this student
-      const sAtt=S.att.filter(a=>a.sId===s.id);
-      const sP=sAtt.filter(a=>a.st==='present').length;
-      const sT=sAtt.length;
-      const sPp=pct(sP,sT);
-      return`<div class="card" style="position:relative;overflow:visible">
-        <!-- Color top bar -->
-        <div style="height:6px;background:${clr}"></div>
-        <div style="padding:14px">
-          <div class="row" style="margin-bottom:12px">
-            <div class="av" style="width:48px;height:48px;border-radius:14px;background:${clr}15;color:${clr};font-size:20px;font-weight:800;border:2px solid ${clr}25">${s.n[0].toUpperCase()}</div>
-            <div style="flex:1;min-width:0">
-              <p style="font-size:14px;font-weight:700;color:#0f172a;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s.n)}</p>
-              <p style="font-size:11px;color:#64748b;margin-top:2px">${esc(s.fn?'Walid: '+s.fn:'—')}</p>
-            </div>
-            <div class="row" style="gap:4px">
-              <button onclick="om('stu','${sj}')" class="btn bsb" style="padding:5px 8px;font-size:12px">✏</button>
-              <button onclick="dStu('${s.id}')" class="btn bsr" style="padding:5px 8px;font-size:12px">🗑</button>
-            </div>
-          </div>
-          <!-- Info Grid -->
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px">
-            ${s.rn?`<div style="background:#f8fafc;border-radius:8px;padding:6px 8px"><p style="color:#94a3b8;font-weight:600;text-transform:uppercase">Roll No</p><p style="font-weight:700;color:#334155;margin-top:2px">${esc(s.rn)}</p></div>`:''}
-            ${s.sid?`<div style="background:#f8fafc;border-radius:8px;padding:6px 8px"><p style="color:#94a3b8;font-weight:600;text-transform:uppercase">Student ID</p><p style="font-weight:700;color:#334155;margin-top:2px">${esc(s.sid)}</p></div>`:''}
-            ${s.ph?`<div style="background:#f8fafc;border-radius:8px;padding:6px 8px"><p style="color:#94a3b8;font-weight:600;text-transform:uppercase">Phone</p><p style="font-weight:700;color:#334155;margin-top:2px">${esc(s.ph)}</p></div>`:''}
-            ${s.dob?`<div style="background:#f8fafc;border-radius:8px;padding:6px 8px"><p style="color:#94a3b8;font-weight:600;text-transform:uppercase">DOB</p><p style="font-weight:700;color:#334155;margin-top:2px">${fD(s.dob)}</p></div>`:''}
-            ${s.addr?`<div style="background:#f8fafc;border-radius:8px;padding:6px 8px;grid-column:span 2"><p style="color:#94a3b8;font-weight:600;text-transform:uppercase">Pata</p><p style="font-weight:500;color:#334155;margin-top:2px">${esc(s.addr)}</p></div>`:''}
-          </div>
-          <!-- Attendance mini stat -->
-          ${sT>0?`<div style="margin-top:10px;padding-top:10px;border-top:1px solid #f1f5f9">
-            <div class="row" style="justify-content:space-between;margin-bottom:4px">
-              <span style="font-size:11px;color:#64748b;font-weight:500">Hazri</span>
-              <span style="font-size:11px;font-weight:700;color:${sPp>=75?'#15803d':sPp>=50?'#d97706':'#dc2626'}">${sPp}%</span>
-            </div>
-            <div class="prog"><div class="pbar" style="background:${sPp>=75?'#10b981':sPp>=50?'#f59e0b':'#ef4444'};width:${sPp}%"></div></div>
-          </div>`:''}
-        </div>
-      </div>`;}).join('')}
-  </div>`}
-  </div>`;}
-
-// Teacher: Attendance
-function tAtt(){
-  const mc=myCls();if(!mc)return noCls();
-  const ms=myStus();
-  const tda=S.att.filter(a=>a.cId===mc.id&&a.date===S.attDate);
-  const prs=tda.filter(a=>a.st==='present').length;
-  const abs=tda.filter(a=>a.st==='absent').length;
-  const lt=tda.filter(a=>a.st==='late').length;
-  const pp=pct(prs,ms.length);
-  // Monthly summary
-  const mn=S.attDate.slice(0,7);
-  const mAtt=S.att.filter(a=>a.cId===mc.id&&a.date.startsWith(mn));
-  const mDays=[...new Set(mAtt.map(a=>a.date))].length;
-  return`<div class="gap">
-  <div><h1 class="pt">Hazri</h1><p class="ps">${esc(mc.n)} ${esc(mc.s)}</p></div>
-
-  <!-- Date & Controls -->
-  <div style="display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap">
-    <div style="flex:1;min-width:160px"><label class="fl">Tarikh Chunen</label><input type="date" class="fi" value="${S.attDate}" onchange="S.attDate=this.value;uc()"/></div>
-    <div class="row" style="flex-wrap:wrap;gap:6px">
-      <button onclick="mAllAtt('present')" class="btn bsg" style="font-size:12px">✅ Sab Hazir</button>
-      <button onclick="mAllAtt('absent')" class="btn bsr" style="font-size:12px">❌ Sab Ghair Hazir</button>
-    </div>
-  </div>
-
-  <!-- Summary Cards -->
-  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px">
-    ${[['✅','Hazir',prs,'#dcfce7','#15803d'],['❌','Ghair Hazir',abs,'#fee2e2','#dc2626'],['⏰','Der Se',lt,'#fef3c7','#d97706'],['📊','Hazri %',pp+'%','#f0f9ff','#0369a1']].map(([e,l,v,bg,c])=>`
-    <div style="background:${bg};border:1px solid ${c}25;border-radius:12px;padding:12px;text-align:center">
-      <div style="font-size:20px;margin-bottom:4px">${e}</div>
-      <p style="font-size:20px;font-weight:800;color:${c}">${v}</p>
-      <p style="font-size:10px;color:${c};opacity:.7;margin-top:2px;font-weight:600">${l}</p>
-    </div>`).join('')}
-  </div>
-
-  <!-- Progress Bar -->
-  <div style="background:#fff;border-radius:12px;padding:14px;border:1px solid #e2e8f0">
-    <div class="bw" style="margin-bottom:8px">
-      <span style="font-size:12px;font-weight:600;color:#475569">${fD(S.attDate)} — Hazri Progress</span>
-      <span style="font-size:12px;font-weight:700;color:${pp>=75?'#15803d':pp>=50?'#d97706':'#dc2626'}">${prs}/${ms.length}</span>
-    </div>
-    <div class="prog" style="height:8px;border-radius:6px"><div class="pbar" style="background:${pp>=75?'#10b981':pp>=50?'#f59e0b':'#ef4444'};width:${pp}%;border-radius:6px"></div></div>
-  </div>
-
-  <!-- Student Attendance List -->
-  <div class="card">
-    <div class="ch bw">
-      <p style="font-size:13px;font-weight:700">${fD(S.attDate)} — Students ki Hazri</p>
-      <span style="font-size:11px;color:#64748b">${tda.length}/${ms.length} mark kiye</span>
-    </div>
-    ${ms.length===0?noDt('👨‍🎓','Pehle students add karo — Students section mein jao'):`
-    <div>${ms.map((s,i)=>{
-      const st=tda.find(a=>a.sId===s.id)?.st||null;
-      const clr=COLORS[i%COLORS.length];
-      return`<div class="attrow">
-        <div class="row">
-          <div style="width:26px;height:26px;border-radius:8px;background:${clr}20;color:${clr};font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0">${i+1}</div>
-          <div>
-            <p style="font-size:13px;font-weight:600;color:#0f172a">${esc(s.n)}</p>
-            <p style="font-size:11px;color:#94a3b8">${[s.fn?'Walid: '+s.fn:'',s.rn?'Roll: '+s.rn:''].filter(Boolean).join(' | ')||'—'}</p>
-          </div>
-        </div>
-        <div class="row" style="gap:5px">
-          ${st?`<div style="margin-right:6px">${bH(st)}</div>`:''}
-          <button onclick="mAtt('${s.id}','present')" class="abt" style="background:${st==='present'?'#10b981':'#dcfce7'};color:${st==='present'?'#fff':'#15803d'}">✓ Hazir</button>
-          <button onclick="mAtt('${s.id}','absent')" class="abt" style="background:${st==='absent'?'#ef4444':'#fee2e2'};color:${st==='absent'?'#fff':'#dc2626'}">✗ Ghair</button>
-          <button onclick="mAtt('${s.id}','late')" class="abt" style="background:${st==='late'?'#f59e0b':'#fef3c7'};color:${st==='late'?'#fff':'#d97706'}">⏰ Der</button>
-        </div>
-      </div>`;}).join('')}
-    </div>`}
-  </div>
-
-  <!-- Monthly Summary -->
-  ${mDays>0?`<div class="card cp">
-    <p style="font-size:13px;font-weight:700;margin-bottom:12px">${S.attDate.slice(0,7)} — Mahana Khulasa</p>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px">
-      ${ms.slice(0,6).map(s=>{const sa=mAtt.filter(a=>a.sId===s.id);const sp=sa.filter(a=>a.st==='present').length;const pp2=pct(sp,mDays);const col=pp2>=75?'#10b981':pp2>=50?'#f59e0b':'#ef4444';return`
-      <div style="background:#f8fafc;border-radius:10px;padding:10px;text-align:center">
-        <p style="font-size:12px;font-weight:600;margin-bottom:4px;color:#334155;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(s.n.split(' ')[0])}</p>
-        <p style="font-size:18px;font-weight:800;color:${col}">${pp2}%</p>
-        <p style="font-size:10px;color:#94a3b8">${sp}/${mDays} din</p>
-      </div>`;}).join('')}
-    </div>
-  </div>`:''}
-  </div>`;}
-
-// Teacher: Monthly Report
-function tRp(){
-  const mc=myCls();if(!mc)return noCls();
-  const ms=myStus();
-  return`<div class="gap">
-  <div><h1 class="pt">Monthly Report</h1><p class="ps">${esc(mc.n)} ${esc(mc.s)} — Number aur grade darj karen</p></div>
-
-  <!-- Month / Year + Save -->
-  <div style="display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap">
-    <div style="flex:1;min-width:140px"><label class="fl">Mahina</label>
-      <select class="fi" onchange="S.rM=+this.value;uc()">${URMO.map((m,i)=>`<option value="${i+1}"${S.rM===i+1?' selected':''}>${m}</option>`).join('')}</select></div>
-    <div style="min-width:90px"><label class="fl">Saal</label>
-      <select class="fi" onchange="S.rY=+this.value;uc()">${[2024,2025,2026].map(y=>`<option${S.rY===y?' selected':''}>${y}</option>`).join('')}</select></div>
-    <button onclick="sRpts()" class="btn bb" style="align-self:flex-end;min-width:120px">💾 Save Karen</button>
-  </div>
-
-  <!-- Info Box -->
-  <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:14px;font-size:12px;color:#1d4ed8">
-    <b>💡 Tareeqa:</b> Neeche har student ke samnay "Hasil Number" likho. Total marks bhi set kar sakte ho. Grade (A+/A/B/C/D/F) khud ban jayega. Remarks optional hain.
-  </div>
-
-  <!-- Report Table -->
-  <div class="card">
-    <div class="ch bw">
-      <p style="font-size:13px;font-weight:700">${URMO[S.rM-1]} ${S.rY} — Reports</p>
-      <span style="font-size:11px;color:#64748b">${S.reports.filter(r=>r.cId===mc.id&&r.m===S.rM&&r.y===S.rY).length}/${ms.length} fill ki gayi hain</span>
-    </div>
-    ${ms.length===0?noDt('📋','Pehle students add karo'):`
-    <div class="ovx"><table style="min-width:580px">
-    <thead><tr><th>#</th><th>Naam</th><th>Hasil Number</th><th>Kul Number</th><th>Grade</th><th>Remarks</th></tr></thead>
-    <tbody>${ms.map((s,i)=>{
-      const r=S.reports.find(x=>x.sId===s.id&&x.cId===mc.id&&x.m===S.rM&&x.y===S.rY);
-      const mk=r?.mk??'';const tot=r?.tot||100;
-      const g=mk!==''?grd(parseInt(mk)||0,tot):null;
-      const clr=COLORS[i%COLORS.length];
-      return`<tr id="rr${s.id}">
-        <td style="color:#94a3b8;font-weight:600">${i+1}</td>
-        <td><div class="row"><div class="av" style="background:${clr}20;color:${clr};font-size:11px">${s.n[0].toUpperCase()}</div><div><p style="font-weight:600;font-size:13px">${esc(s.n)}</p><p style="font-size:10px;color:#94a3b8">${esc(s.fn||s.rn||'—')}</p></div></div></td>
-        <td><input type="number" min="0" id="mk${s.id}" value="${mk}" oninput="upGr('${s.id}')" placeholder="0"
-          style="width:75px;padding:7px 10px;border:2px solid ${g?gCl(g):' #e2e8f0'};border-radius:8px;font-size:13px;font-weight:600;text-align:center;font-family:inherit;transition:all .2s;background:${g?gBg(g):'#fff'}"/></td>
-        <td><input type="number" id="tot${s.id}" value="${tot}" oninput="upGr('${s.id}')"
-          style="width:65px;padding:7px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:12px;text-align:center;font-family:inherit"/></td>
-        <td id="gr${s.id}">${g?`<span class="grbox" style="background:${gBg(g)};color:${gCl(g)};font-size:14px">${g}</span>`:'<span style="color:#cbd5e1;font-size:18px">—</span>'}</td>
-        <td><input id="rm${s.id}" value="${esc(r?.rem||'')}" placeholder="Comments, remarks..." 
-          style="width:100%;padding:7px 10px;border:1px solid #e2e8f0;border-radius:8px;font-size:12px;font-family:inherit;min-width:140px"/></td>
-      </tr>`;}).join('')}
-    </tbody></table></div>
-
-    <!-- Grade Legend -->
-    <div style="padding:14px 18px;border-top:1px solid #f1f5f9;display:flex;flex-wrap:wrap;gap:8px;align-items:center">
-      <span style="font-size:11px;color:#64748b;font-weight:600">Grade Scale:</span>
-      ${[['A+','90-100'],['A','80-89'],['B','65-79'],['C','50-64'],['D','40-49'],['F','0-39']].map(([g,r])=>`
-      <span style="display:inline-flex;align-items:center;gap:4px;font-size:11px">
-        <span class="grbox" style="background:${gBg(g)};color:${gCl(g)};padding:2px 7px">${g}</span>
-        <span style="color:#94a3b8">${r}%</span>
-      </span>`).join('')}
-    </div>`}
-  </div>
-  </div>`;}
-
-function upGr(sid){
-  const m=parseInt(document.getElementById('mk'+sid)?.value)||0;
-  const t=parseInt(document.getElementById('tot'+sid)?.value)||100;
-  const mv=document.getElementById('mk'+sid)?.value;
-  const el=document.getElementById('gr'+sid);
-  const mi=document.getElementById('mk'+sid);
-  if(!el)return;
-  if(mv===''||mv===undefined){el.innerHTML='<span style="color:#cbd5e1;font-size:18px">—</span>';if(mi){mi.style.border='2px solid #e2e8f0';mi.style.background='#fff';}return;}
-  const g=grd(m,t);
-  el.innerHTML=`<span class="grbox" style="background:${gBg(g)};color:${gCl(g)};font-size:14px">${g}</span>`;
-  if(mi){mi.style.border=`2px solid ${gCl(g)}`;mi.style.background=gBg(g);}
+  </div></div>`;
 }
 
-function sRpts(){
-  const mc=myCls();if(!mc)return;
-  const ms=myStus();
-  const base=S.reports.filter(r=>!(r.cId===mc.id&&r.m===S.rM&&r.y===S.rY));
-  const add=[];
-  ms.forEach(s=>{
-    const mv=document.getElementById('mk'+s.id)?.value;
-    if(mv===''||mv===undefined)return;
-    const m=parseInt(mv)||0;
-    const t=parseInt(document.getElementById('tot'+s.id)?.value)||100;
-    const rem=document.getElementById('rm'+s.id)?.value||'';
-    const ex=S.reports.find(r=>r.sId===s.id&&r.cId===mc.id&&r.m===S.rM&&r.y===S.rY);
-    add.push({id:ex?.id||uid(),sId:s.id,cId:mc.id,m:S.rM,y:S.rY,mk:m,tot:t,gr:grd(m,t),rem,by:S.user.id,ca:new Date().toISOString()});
-  });
-  S.reports=[...base,...add];sv.r();
-  toast(`${add.length} students ki report save ho gayi ✓`);
-}
+const gBg=g=>g==='A+'||g==='A'?'#dcfce7':g==='B'?'#dbeafe':g==='C'?'#fef3c7':'#fee2e2';
+const gCl=g=>g==='A+'||g==='A'?'#15803d':g==='B'?'#1d4ed8':g==='C'?'#d97706':'#dc2626';
 
-// ══════════════════════════════════════════════════════════════════════
-// MUFATTISH PAGES
-// ══════════════════════════════════════════════════════════════════════
-function mC(){switch(S.page){case'cl':return mfCls();case'at':return mfAt();case'rp':return mfRp();default:return mfOv();}}
-function mfC(){return S.classes.filter(c=>c.mId===S.user.id);}
-
-function mfOv(){
-  const mc=mfC();if(!mc.length)return noCls('Koi class assign nahi','Admin se class assignment karwaen');
-  const td=tod();
-  const myStu=S.students.filter(s=>mc.some(c=>c.id===s.cId));
-  const p=S.att.filter(a=>mc.some(c=>c.id===a.cId)&&a.date===td&&a.st==='present').length;
-  return`<div class="gap">
-  <div><h1 class="pt">Mufattish Dashboard</h1><p class="ps">As-salamu Alaykum, ${esc(S.user.nm)}</p></div>
-  <div class="ga">${[['🏫',mc.length,'Classes','#1d4ed8'],['👨‍🎓',myStu.length,'Students','#15803d'],['✅',p,'Aaj Hazir','#7c3aed'],['📊',pct(p,myStu.length)+'%','Hazri %','#c2410c']].map(([e,v,l,c])=>`
-  <div class="stbox"><div style="font-size:26px;margin-bottom:8px">${e}</div><div class="stnum" style="color:${c}">${v}</div><div class="stlbl">${l}</div></div>`).join('')}</div>
-  <div class="g3">${mc.map(cls=>{
-    const t=S.users.find(u=>u.id===cls.tId);const sc=S.students.filter(s=>s.cId===cls.id).length;
-    const ca=S.att.filter(a=>a.cId===cls.id&&a.date===td);const cp=ca.filter(a=>a.st==='present').length;
-    const cpp=pct(cp,sc);const col=cpp>=75?'#10b981':cpp>=50?'#f59e0b':'#ef4444';
-    return`<div class="card"><div style="background:linear-gradient(135deg,#6d28d9,#7c3aed);padding:14px 16px">
-      <h3 style="color:#fff;font-weight:800;font-size:18px;margin:0">${esc(cls.n)} <span style="color:#ddd6fe;font-weight:400">${esc(cls.s)}</span></h3>
-      <p style="color:#c4b5fd;font-size:11px;margin-top:4px">${esc(cls.timing||'—')}</p>
-    </div>
-    <div style="padding:14px;display:flex;flex-direction:column;gap:8px">
-      <p style="font-size:12px;color:#475569">👨‍🏫 Teacher: <b style="color:${t?'#0f172a':'#ef4444'}">${t?esc(t.nm):'⚠ Assign nahi'}</b></p>
-      <p style="font-size:12px;color:#475569">👨‍🎓 Students: <b>${sc}</b></p>
-      <div class="row"><div class="prog" style="flex:1"><div class="pbar" style="background:${col};width:${cpp}%"></div></div><b style="color:${col};flex-shrink:0;font-size:13px">${cpp}%</b></div>
-    </div></div>`;}).join('')}
-  </div></div>`;}
-
-function mfCls(){
-  const mc=mfC();
-  return`<div class="gap"><div><h1 class="pt">Meri Classes</h1><p class="ps">Assigned classes ki tafseel</p></div>
-  ${!mc.length?noDt('🏫','Koi class assign nahi'):`
-  <div class="g3">${mc.map(cls=>{const t=S.users.find(u=>u.id===cls.tId);const sc=S.students.filter(s=>s.cId===cls.id).length;return`
-  <div class="card"><div style="background:linear-gradient(135deg,#6d28d9,#7c3aed);padding:14px 16px">
-    <h3 style="color:#fff;font-weight:800;font-size:18px;margin:0">${esc(cls.n)} ${esc(cls.s)}</h3>
-    <p style="color:#c4b5fd;font-size:11px;margin-top:4px">${esc(cls.timing||'—')}${cls.room?' | '+esc(cls.room):''}</p>
-  </div>
-  <div style="padding:14px;display:flex;flex-direction:column;gap:8px">
-    <p style="font-size:12px;color:#475569">👨‍🏫 <b style="color:${t?'#0f172a':'#ef4444'}">${t?esc(t.nm):'⚠ Assign nahi'}</b></p>
-    <p style="font-size:12px;color:#475569">👨‍🎓 <b>${sc}</b> students</p>
-    ${cls.notes?`<p style="font-size:11px;color:#94a3b8;border-top:1px solid #f1f5f9;padding-top:6px">${esc(cls.notes)}</p>`:''}
-  </div></div>`;}).join('')}</div>`}
-  </div>`;}
-
-function mfAt(){
-  const mc=mfC();const shown=S.attCls?mc.filter(c=>c.id===S.attCls):mc;const tda=S.att.filter(a=>a.date===S.attDate);
-  return`<div class="gap"><div><h1 class="pt">Attendance</h1><p class="ps">Read only — Teacher ne mark ki</p></div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px">
-    <div><label class="fl">Tarikh</label><input type="date" class="fi" value="${S.attDate}" onchange="S.attDate=this.value;uc()"/></div>
-    <div><label class="fl">Class</label><select class="fi" onchange="S.attCls=this.value;uc()"><option value="">Tamam</option>${mc.map(c=>`<option value="${c.id}"${S.attCls===c.id?' selected':''}>${esc(c.n)} ${esc(c.s)}</option>`).join('')}</select></div>
-  </div>
-  ${!shown.length?noDt('📅','Koi class nahi'):shown.map(cls=>{
-    const stu=S.students.filter(s=>s.cId===cls.id);const ca=tda.filter(a=>a.cId===cls.id);
-    const p=ca.filter(a=>a.st==='present').length;const ab=ca.filter(a=>a.st==='absent').length;const pp=pct(p,stu.length);
-    return`<div class="card"><div class="ch bw">
-      <div><p style="font-size:14px;font-weight:700">${esc(cls.n)} ${esc(cls.s)}</p><p style="font-size:11px;color:#64748b;margin-top:2px">${ca.length}/${stu.length} mark kiye</p></div>
-      <div class="row"><span class="badge" style="background:#dcfce7;color:#15803d">✓ ${p}</span><span class="badge" style="background:#fee2e2;color:#dc2626">✗ ${ab}</span><b>${pp}%</b></div>
-    </div>
-    ${stu.slice(0,5).map(s=>{const r=ca.find(a=>a.sId===s.id);return`
-    <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 18px;border-top:1px solid #f8fafc">
-      <span style="font-size:13px;font-weight:500">${esc(s.n)}</span>
-      ${r?bH(r.st):'<span style="font-size:11px;color:#cbd5e1">mark nahi hua</span>'}
-    </div>`;}).join('')}
-    ${stu.length>5?`<p style="padding:7px 18px;font-size:11px;color:#94a3b8">aur ${stu.length-5} students...</p>`:''}
-    </div>`;}).join('')}
-  </div>`;}
-
-function mfRp(){
-  const mc=mfC();const shown=S.rCls?mc.filter(c=>c.id===S.rCls):mc;
-  const ms=`${S.rY}-${String(S.rM).padStart(2,'0')}`;
-  const gS=cid=>{const ma=S.att.filter(a=>a.cId===cid&&a.date.startsWith(ms));const days=[...new Set(ma.map(a=>a.date))].length;const p=ma.filter(a=>a.st==='present').length;const n=S.students.filter(s=>s.cId===cid).length;const rp=S.reports.filter(r=>r.cId===cid&&r.m===S.rM&&r.y===S.rY);const avg=rp.length?Math.round(rp.reduce((s,r)=>s+(r.mk/r.tot*100),0)/rp.length):0;return{days,p,n,avg,sub:rp.length};};
-  const allR=S.reports.filter(r=>r.m===S.rM&&r.y===S.rY&&shown.some(c=>c.id===r.cId));
-  return`<div class="gap"><div><h1 class="pt">Reports</h1><p class="ps">Read only — Teacher ne fill ki</p></div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px">
-    <div><label class="fl">Mahina</label><select class="fi" onchange="S.rM=+this.value;uc()">${URMO.map((m,i)=>`<option value="${i+1}"${S.rM===i+1?' selected':''}>${m}</option>`).join('')}</select></div>
-    <div><label class="fl">Saal</label><select class="fi" onchange="S.rY=+this.value;uc()">${[2024,2025,2026].map(y=>`<option${S.rY===y?' selected':''}>${y}</option>`).join('')}</select></div>
-    <div><label class="fl">Class</label><select class="fi" onchange="S.rCls=this.value;uc()"><option value="">Tamam</option>${mc.map(c=>`<option value="${c.id}"${S.rCls===c.id?' selected':''}>${esc(c.n)} ${esc(c.s)}</option>`).join('')}</select></div>
-  </div>
-  <div class="g3">${shown.map(cls=>{const{days,p,n,avg,sub}=gS(cls.id);const col=avg>=75?'#10b981':avg>=50?'#f59e0b':'#ef4444';return`
-  <div class="scard"><div class="bw" style="margin-bottom:10px"><b>${esc(cls.n)} ${esc(cls.s)}</b><span style="font-size:16px;font-weight:800;color:${col}">${avg}%</span></div>
-  <div class="prog" style="margin-bottom:8px"><div class="pbar" style="background:${col};width:${avg}%"></div></div>
-  <p style="font-size:11px;color:#64748b">Reports: ${sub}/${n} | Din: ${days}</p></div>`;}).join('')}</div>
-  <div class="card"><div class="ch"><p style="font-size:13px;font-weight:700">Reports — ${URMO[S.rM-1]} ${S.rY}</p></div>
-  ${!allR.length?noDt('📋','Abhi koi report nahi'):`
-  <div class="ovx"><table style="min-width:480px"><thead><tr><th>Student</th><th>Class</th><th>Marks</th><th>Grade</th><th>Remarks</th></tr></thead>
-  <tbody>${allR.map(r=>{const s=S.students.find(x=>x.id===r.sId);const cls=mc.find(x=>x.id===r.cId);return`
-  <tr><td><b>${esc(s?.n||'—')}</b></td><td>${cls?`${esc(cls.n)} ${esc(cls.s)}`:'—'}</td>
-  <td><b>${r.mk}/${r.tot}</b></td>
-  <td><span class="grbox" style="background:${gBg(r.gr)};color:${gCl(r.gr)}">${r.gr}</span></td>
-  <td style="color:#64748b">${esc(r.rem||'—')}</td></tr>`;}).join('')}
-  </tbody></table></div>`}
-  </div></div>`;}
-
-// ══════════════════════════════════════════════════════════════════════
-// MODAL BODIES
-// ══════════════════════════════════════════════════════════════════════
 function clsBody(){
   const d=S.modal.data||{};
   const te=S.users.filter(u=>u.role==='teacher');
   const mu=S.users.filter(u=>u.role==='mufattish');
-  return`
+  
+  const clsOptions = CNAMES.map(n=>`<option ${(d.n||'Prep')===n?' selected':''}>${n}</option>`).join('');
+  const secOptions = SECS.map(s=>`<option ${(d.s||'A')===s?' selected':''}>${s}</option>`).join('');
+  
+  return `
   <div class="g2">
-    <div><label class="fl">Class Naam</label><select id="mn" class="fi">${CNAMES.map(n=>`<option${(d.n||'Prep')===n?' selected':''}>${n}</option>`).join('')}</select></div>
-    <div><label class="fl">Section</label><select id="ms" class="fi">${SECS.map(s=>`<option${(d.s||'A')===s?' selected':''}>${s}</option>`).join('')}</select></div>
+    <div><label class="fl">Class Naam</label><select id="mn" class="fi">${clsOptions}</select></div>
+    <div><label class="fl">Section</label><select id="ms" class="fi">${secOptions}</select></div>
   </div>
   <div class="g2">
     <div><label class="fl">Timing</label><input id="mt" class="fi" value="${esc(d.timing||'')}" placeholder="8AM - 1PM"/></div>
@@ -984,56 +463,36 @@ function clsBody(){
   </div>
   <div><label class="fl">👨‍🏫 Teacher Assign Karen</label>
     <select id="mte" class="fi"><option value="">-- Teacher chunen --</option>
-      ${te.length===0?'<option disabled>Pehle teacher banao (Teacher section mein jao)</option>':''}
-      ${te.map(t=>`<option value="${t.id}"${d.tId===t.id?' selected':''}>${esc(t.nm)} (${esc(t.un)})</option>`).join('')}
-    </select><p style="font-size:11px;color:#64748b;margin-top:4px">👆 Teacher assign karo warna teacher ko class nahi dikhegi</p>
+      ${te.length===0?'<option disabled>Pehle teacher banao</option>':''}
+      ${te.map(t=>`<option value="${t.id}"${d.tId===t.id?' selected':''}>${esc(t.nm||t.name)} (${esc(t.un||t.username)})</option>`).join('')}
+    </select>
   </div>
   <div><label class="fl">🔍 Mufattish Assign Karen</label>
     <select id="mmu" class="fi"><option value="">-- Mufattish chunen --</option>
       ${mu.length===0?'<option disabled>Pehle mufattish banao</option>':''}
-      ${mu.map(m=>`<option value="${m.id}"${d.mId===m.id?' selected':''}>${esc(m.nm)} (${esc(m.un)})</option>`).join('')}
+      ${mu.map(m=>`<option value="${m.id}"${d.mId===m.id?' selected':''}>${esc(m.nm||m.name)} (${esc(m.un||m.username)})</option>`).join('')}
     </select>
   </div>
-  <div><label class="fl">Notes (ikhtiari)</label><textarea id="mno" class="fi" rows="2" style="resize:none">${esc(d.notes||'')}</textarea></div>`;}
+  <div><label class="fl">Notes (ikhtiari)</label><textarea id="mno" class="fi" rows="2" style="resize:none">${esc(d.notes||'')}</textarea></div>`;
+}
 
 function userBody(){
   const d=S.modal.data||{};
-  return`
-  <div><label class="fl">Mukammal Naam *</label><input id="mnm" class="fi" value="${esc(d.nm||'')}" placeholder="Misal: Ahmad Ali"/><p id="nmerr" class="ferr">Naam zaruri hai</p></div>
-  <div><label class="fl">Username *</label><input id="mun" class="fi" value="${esc(d.un||'')}" placeholder="Misal: ahmad123"/><p id="unerr" class="ferr">Username zaruri hai</p></div>
+  const nDisplay = d.nm||d.name||'';
+  const uDisplay = d.un||d.username||'';
+  const pDisplay = d.pw||d.password||'';
+  return `
+  <div><label class="fl">Mukammal Naam *</label><input id="mnm" class="fi" value="${esc(nDisplay)}" placeholder="Misal: Ahmad Ali"/><p id="nmerr" class="ferr">Naam zaruri hai</p></div>
+  <div><label class="fl">Username *</label><input id="mun" class="fi" value="${esc(uDisplay)}" placeholder="Misal: ahmad123"/><p id="unerr" class="ferr">Username zaruri hai</p></div>
   <div><label class="fl">Password *</label>
     <div style="position:relative">
-      <input id="mpw" class="fi" type="password" value="${esc(d.pw||'')}" placeholder="Kam az kam 4 harf" style="padding-right:38px"/>
+      <input id="mpw" class="fi" type="password" value="${esc(pDisplay)}" placeholder="Kam az kam 4 harf" style="padding-right:38px"/>
       <button onclick="var i=document.getElementById('mpw');i.type=i.type==='password'?'text':'password'" style="position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:16px;cursor:pointer;color:#94a3b8">👁️</button>
     </div><p id="pwerr" class="ferr">Password zaruri hai</p>
   </div>
-  <div><label class="fl">Phone Number</label><input id="mph" class="fi" value="${esc(d.ph||'')}" placeholder="03XX-XXXXXXX"/></div>`;}
+  <div><label class="fl">Phone Number</label><input id="mph" class="fi" value="${esc(d.ph||'')}" placeholder="03XX-XXXXXXX"/></div>`;
+}
 
-function stuBody(){
-  const d=S.modal.data||{};
-  const mc=myCls();
-  return`
-  <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px 14px;font-size:12px;color:#15803d;font-weight:500">
-    📚 Class: <b>${mc?`${mc.n} ${mc.s}`:'—'}</b>
-  </div>
-  <div id="sterr" style="display:none;background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:10px 14px;color:#dc2626;font-size:12px"></div>
-  <div class="g2">
-    <div><label class="fl">Student ka Naam *</label><input id="sn" class="fi" value="${esc(d.n||'')}" placeholder="Ahmad Ali"/></div>
-    <div><label class="fl">Walid ka Naam</label><input id="sfn" class="fi" value="${esc(d.fn||'')}" placeholder="Muhammad Ali"/></div>
-  </div>
-  <div class="g2">
-    <div><label class="fl">Roll Number</label><input id="srn" class="fi" value="${esc(d.rn||'')}" placeholder="1"/></div>
-    <div><label class="fl">Student ID</label><input id="ssid" class="fi" value="${esc(d.sid||'')}" placeholder="STU001"/></div>
-  </div>
-  <div class="g2">
-    <div><label class="fl">Phone / Guardian Contact</label><input id="sph" class="fi" value="${esc(d.ph||'')}" placeholder="03XX-XXXXXXX"/></div>
-    <div><label class="fl">Date of Birth</label><input id="sdob" class="fi" type="date" value="${esc(d.dob||'')}"/></div>
-  </div>
-  <div><label class="fl">Ghar ka Pata (Address)</label><input id="sadr" class="fi" value="${esc(d.addr||'')}" placeholder="Mohalla, Gali, Shehar..."/></div>`;}
-
-// ══════════════════════════════════════════════════════════════════════
-// SAVE / DELETE ACTIONS
-// ══════════════════════════════════════════════════════════════════════
 function sCls(){
   const d=S.modal.data;
   const obj={id:d?.id||uid(),n:document.getElementById('mn').value,s:document.getElementById('ms').value,timing:document.getElementById('mt').value,room:document.getElementById('mr').value,tId:document.getElementById('mte').value,mId:document.getElementById('mmu').value,notes:document.getElementById('mno').value,ca:d?.ca||new Date().toISOString()};
@@ -1052,55 +511,21 @@ function sUser(){
   he('nmerr');he('unerr');he('pwerr');
   if(!nm)se('nmerr');
   if(!un)se('unerr');
-  else if(S.users.find(u=>u.un===un&&u.id!==d?.id))se('unerr');
+  else if(S.users.find(u=>(u.un===un||u.username===un)&&u.id!==d?.id))se('unerr');
   if(!pw)se('pwerr');else if(pw.length<4)se('pwerr');
   if(!ok)return;
-  const obj={id:d?.id||uid(),nm,un,pw,ph,role,ca:d?.ca||new Date().toISOString()};
+  const obj={id:d?.id||uid(),nm,name:nm,un,username:un,pw,password:pw,ph,role,ca:d?.ca||new Date().toISOString()};
   S.users=d?S.users.map(u=>u.id===d.id?obj:u):[...S.users,obj];
   sv.u();cm();toast(d?'Update ho gaya ✓':'Naya account ban gaya ✓');uc();
 }
-function sStu(){
-  const d=S.modal.data;const mc=myCls();if(!mc)return;
-  const n=document.getElementById('sn').value.trim();
-  if(!n){const el=document.getElementById('sterr');el.textContent='Student ka naam zaruri hai';el.style.display='block';return;}
-  const obj={id:d?.id||uid(),cId:mc.id,n,fn:document.getElementById('sfn').value,rn:document.getElementById('srn').value,sid:document.getElementById('ssid').value,ph:document.getElementById('sph').value,dob:document.getElementById('sdob').value,addr:document.getElementById('sadr').value,ca:d?.ca||new Date().toISOString()};
-  S.students=d?S.students.map(s=>s.id===d.id?obj:s):[...S.students,obj];
-  sv.s();cm();toast(d?'Student update ho gaya ✓':'Naya Student add ho gaya ✓');uc();
-}
 function dCls(id){
-  if(!confirm('Class delete karni hai? Is class ke tamam students aur data bhi delete ho jayega.'))return;
+  if(!confirm('Class delete karni hai?'))return;
   S.classes=S.classes.filter(c=>c.id!==id);S.students=S.students.filter(s=>s.cId!==id);S.att=S.att.filter(a=>a.cId!==id);S.reports=S.reports.filter(r=>r.cId!==id);
   sv.c();sv.s();sv.a();sv.r();toast('Class delete ho gayi');uc();
 }
 function dUser(id){if(!confirm('Delete karna hai?'))return;S.users=S.users.filter(u=>u.id!==id);sv.u();toast('Delete ho gaya');uc();}
-function dStu(id){if(!confirm('Student delete karna hai?'))return;S.students=S.students.filter(s=>s.id!==id);S.att=S.att.filter(a=>a.sId!==id);sv.s();sv.a();toast('Student delete ho gaya');uc();}
 
-// ══════════════════════════════════════════════════════════════════════
-// ATTENDANCE
-// ══════════════════════════════════════════════════════════════════════
-function mAtt(sId,st){
-  const mc=myCls();if(!mc)return;
-  const ex=S.att.find(a=>a.sId===sId&&a.cId===mc.id&&a.date===S.attDate);
-  if(ex)S.att=S.att.map(a=>a.id===ex.id?{...a,st}:a);
-  else S.att=[...S.att,{id:uid(),sId,cId:mc.id,date:S.attDate,st,by:S.user.id,at:new Date().toISOString()}];
-  sv.a();uc();
-}
-function mAllAtt(st){
-  const mc=myCls();if(!mc)return;const ms=myStus();
-  S.att=[...S.att.filter(a=>!(a.cId===mc.id&&a.date===S.attDate)),...ms.map(s=>({id:uid(),sId:s.id,cId:mc.id,date:S.attDate,st,by:S.user.id,at:new Date().toISOString()}))];
-  sv.a();toast(`Tamam ${st==='present'?'Hazir':'Ghair Hazir'} ✓`);uc();
-}
-
-// ══════════════════════════════════════════════════════════════════════
-// HELPERS
-// ══════════════════════════════════════════════════════════════════════
-function bH(s){const m={present:{bg:'#dcfce7',c:'#15803d',l:'✓ Hazir'},absent:{bg:'#fee2e2',c:'#dc2626',l:'✗ Ghair Hazir'},late:{bg:'#fef3c7',c:'#d97706',l:'⏰ Der Se'}};const x=m[s]||{bg:'#f1f5f9',c:'#64748b',l:s};return`<span class="badge" style="background:${x.bg};color:${x.c}">${x.l}</span>`;}
-function noDt(icon,msg){return`<div class="nodata"><div style="font-size:44px;margin-bottom:12px">${icon}</div><p style="font-size:14px;font-weight:500">${msg}</p></div>`;}
-function noCls(msg='Koi class assign nahi',sub='Admin se class assignment karwaen'){return`<div style="display:flex;align-items:center;justify-content:center;height:65vh"><div style="text-align:center;max-width:320px"><div style="font-size:60px;margin-bottom:16px">📋</div><h2 style="font-size:20px;font-weight:700;color:#334155;margin-bottom:8px">${msg}</h2><p style="font-size:14px;color:#64748b;line-height:1.6">${sub}</p></div></div>`;}
-
-// ═══ INIT ══════════════════════════════════════════════════════════════
 async function init(){
-  // Jab tak data load ho raha hai, Loading screen dikhayein
   document.getElementById('root').innerHTML = '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f172a;color:#fff;font-size:18px;font-weight:bold;">Firebase se data load ho raha hai... ⏳</div>';
   
   let u = await db.get(K.U);
@@ -1114,6 +539,17 @@ async function init(){
   S.students = (await db.get(K.S)) || [];
   S.att = (await db.get(K.A)) || [];
   S.reports = (await db.get(K.R)) || [];
+  
+  const savedUser = sessionStorage.getItem('loggedInUser');
+  if(savedUser) {
+    const parsed = JSON.parse(savedUser);
+    if(parsed.role === 'admin') {
+      S.user = parsed;
+      S.page = 'ov';
+      render();
+      return;
+    }
+  }
   
   render();
 }
