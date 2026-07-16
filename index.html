@@ -289,6 +289,10 @@ function dLogin(){
 // ═══ DASH LAYOUT ══════════════════════════════════════════════════════
 function dashHTML(){
   const role=S.user.role;
+  
+  // Yahan naya uName variable add kiya gaya hai jo dono tarah ke naam utha lega
+  const uName = S.user.name || S.user.nm || 'User'; 
+  
   const rc=role==='admin'?'#3b82f6':role==='teacher'?'#10b981':'#8b5cf6';
   const rl=role==='admin'?'Administrator':role==='teacher'?'Teacher':'Mufattish';
   const navA=[{p:'ov',i:'📊',l:'Dashboard'},{p:'cl',i:'🏫',l:'Prep Classes'},{p:'te',i:'👨‍🏫',l:'Teachers'},{p:'mu',i:'🔍',l:'Mufattish'},{p:'st',i:'👨‍🎓',l:'Students'},{p:'at',i:'📅',l:'Attendance'},{p:'rp',i:'📈',l:'Reports'}];
@@ -297,6 +301,7 @@ function dashHTML(){
   const nav=role==='admin'?navA:role==='teacher'?navT:navM;
   const nh=nav.map(({p,i,l})=>`<button class="nb${S.page===p?' on':''}" onclick="navTo('${p}')"><span style="font-size:16px;flex-shrink:0">${i}</span>${l}</button>`).join('');
   const content=role==='admin'?aC():role==='teacher'?tC():mC();
+  
   return`<div id="sov" onclick="tgSide()" style="display:${S.side?'block':'none'}" class="ov"></div>
   <div style="display:flex;height:100vh;overflow:hidden">
     <aside id="sb" class="sb ${S.side?'sb-on':'sb-off'}">
@@ -305,8 +310,8 @@ function dashHTML(){
         <div><p style="margin:0;font-size:14px;font-weight:700;white-space:nowrap">Student Mgmt</p><p style="margin:0;font-size:10px;color:#475569;white-space:nowrap">System v4.0</p></div>
       </div>
       <div style="padding:12px 14px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px;flex-shrink:0">
-        <div class="av" style="background:${rc}33;color:${rc};font-size:15px">${esc(S.user.name[0].toUpperCase())}</div>
-        <div style="min-width:0"><p style="margin:0;font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(S.user.name)}</p><p style="margin:0;font-size:10px;color:#475569">${rl}</p></div>
+        <div class="av" style="background:${rc}33;color:${rc};font-size:15px">${esc(uName[0].toUpperCase())}</div>
+        <div style="min-width:0"><p style="margin:0;font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(uName)}</p><p style="margin:0;font-size:10px;color:#475569">${rl}</p></div>
       </div>
       <nav style="flex:1;padding:10px;overflow-y:auto;display:flex;flex-direction:column;gap:2px">${nh}</nav>
       <div style="padding:10px;border-top:1px solid rgba(255,255,255,.08);flex-shrink:0">
@@ -321,7 +326,7 @@ function dashHTML(){
         </div>
         <div class="row">
           <span style="font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;background:${rc}15;color:${rc}">${rl}</span>
-          <div class="av" style="background:${rc}20;color:${rc}">${esc(S.user.name[0].toUpperCase())}</div>
+          <div class="av" style="background:${rc}20;color:${rc}">${esc(uName[0].toUpperCase())}</div>
         </div>
       </header>
       <div id="ct" style="flex:1;overflow-y:auto;padding:16px">${content}</div>
