@@ -71,6 +71,17 @@ tr:hover td{background:#fafcff}
 .stuav{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0}
 .attrow{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-top:1px solid #f8fafc;flex-wrap:wrap;gap:8px}
 .grbox{display:inline-flex;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700}
+  /* Desktop View Auto Adjust */
+@media (min-width: 768px) {
+  .sb { 
+    position: relative !important; 
+    z-index: 10; 
+  } /* Desktop par sidebar automatically screen ke side mein fit ho jayega */
+  
+  #sov { 
+    display: none !important; 
+  } /* Desktop par dark background (overlay) hamesha hide rahega */
+}
 </style>
 </head>
 <body>
@@ -136,7 +147,12 @@ function myCls(){return S.classes.find(c=>c.tId===S.user.id);}
 function myStus(){const mc=myCls();return mc?S.students.filter(s=>s.cId===mc.id):[];}
 
 function render(){document.getElementById('root').innerHTML=dashHTML();rm();}
-function navTo(p){S.page=p;S.side=false;S.q='';uc();}
+function navTo(p){
+  S.page = p;
+  S.side = false; // Menu click hone par sidebar close ka status set karega
+  S.q = '';
+  render(); // uc() ki jagah render() chalaya taaki pura layout refresh ho aur sidebar apne aap band ho jaye
+}
 function tgSide(){S.side=!S.side;const sb=document.getElementById('sb');if(sb)sb.className='sb '+(S.side?'sb-on':'sb-off');const ov=document.getElementById('sov');if(ov)ov.style.display=S.side?'block':'none';}
 function logout(){sessionStorage.removeItem('loggedInUser');window.location.href='index.html';}
 function uc(){document.getElementById('ct').innerHTML=tC();}
