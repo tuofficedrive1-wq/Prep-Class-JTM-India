@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
 <title>Student Management System - Mufattish</title>
+  
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f1f5f9;color:#1e293b}
@@ -71,6 +72,15 @@ tr:hover td{background:#fafcff}
 .stuav{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0}
 .attrow{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-top:1px solid #f8fafc;flex-wrap:wrap;gap:8px}
 .grbox{display:inline-flex;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700}
+  /* Sidebar Overlay for Mobile */
+.sb-ov { position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 25; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(2px); }
+.sb-ov.on { opacity: 1; pointer-events: auto; }
+
+/* Desktop View Auto Adjust */
+@media (min-width: 768px) {
+  .sb { position: relative; z-index: 10; } /* Desktop par sidebar alag se adjust hoga */
+  .sb-ov { display: none !important; } /* Desktop par dark background hide rahega */
+}
 </style>
 </head>
 <body>
@@ -101,17 +111,38 @@ let S={
 function mfC(){return S.classes.filter(c=>c.mId===S.user.id);}
 
 function render(){document.getElementById('root').innerHTML=dashHTML();}
-function navTo(p){S.page=p;S.side=false;uc();}
-function tgSide(){S.side=!S.side;const sb=document.getElementById('sb');if(sb)sb.className='sb '+(S.side?'sb-on':'sb-off');}
 function logout(){sessionStorage.removeItem('loggedInUser');window.location.href='index.html';}
 function uc(){document.getElementById('ct').innerHTML=mC();}
+  function tgSide(){
+  S.side = !S.side;
+  const sb = document.getElementById('sb');
+  const ov = document.getElementById('sb-ov');
+  if(sb) sb.className = 'sb ' + (S.side ? 'sb-on' : 'sb-off');
+  if(ov) ov.className = 'sb-ov ' + (S.side ? 'on' : '');
+}
+
+function navTo(p){
+  S.page = p;
+  S.side = false; // Mobile me menu select karne par sidebar close karne ke liye
+  render(); // Pura UI refresh hoga taaki active tab ka color bhi change ho jaye
+}
 
 function dashHTML(){
-  const uName = S.user.nm || S.user.name || 'Mufattish';
-  const navM=[{p:'ov',i:'📊',l:'Dashboard'},{p:'cl',i:'🏫',l:'Meri Classes'},{p:'at',i:'📅',l:'Attendance'},{p:'rp',i:'📈',l:'Reports'}];
-  const nh=navM.map(({p,i,l})=>`<button class="nb${S.page===p?' on':''}" onclick="navTo('${p}')"><span style="font-size:16px;flex-shrink:0">${i}</span>${l}</button>`).join('');
-  return `<div style="display:flex;height:100vh;overflow:hidden">
-    <aside id="sb" class="sb ${S.side?'sb-on':'sb-off'}">
+  const uName = S.user?.nm || S.user?.name || 'Mufattish';
+  const navM = [
+    {p:'ov', i:'📊', l:'Dashboard'},
+    {p:'cl', i:'🏫', l:'Meri Classes'},
+    {p:'at', i:'📅', l:'Attendance'},
+    {p:'rp', i:'📈', l:'Reports'}
+  ];
+  const nh = navM.map(({p,i,l})=>`<button class="nb${S.page===p?' on':''}" onclick="navTo('${p}')"><span style="font-size:16px;flex-shrink:0">${i}</span>${l}</button>`).join('');
+  
+  return `<div style="display:flex;height:100vh;overflow:hidden;position:relative;">
+    
+    <!-- Mobile Overlay (Bahar click karne par sidebar close hoga) -->
+    <div id="sb-ov" class="sb-ov ${S.side ? 'on' : ''}" onclick="tgSide()"></div>
+    
+    <aside id="sb" class="sb ${S.side ? 'sb-on' : 'sb-off'}">
       <div style="padding:16px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px;flex-shrink:0">
         <span style="font-size:22px;flex-shrink:0">🎓</span>
         <div><p style="margin:0;font-size:14px;font-weight:700">Student Mgmt</p></div>
@@ -121,16 +152,20 @@ function dashHTML(){
         <button onclick="logout()" class="nb" style="color:#f87171">🚪 Logout</button>
       </div>
     </aside>
+    
     <div style="flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0">
-      <header style="background:#fff;border-bottom:1px solid #e2e8f0;padding:11px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
-        <p style="font-size:12px;color:#64748b">${fDlong(tod())}</p>
+      <header style="background:#fff;border-bottom:1px solid #e2e8f0;padding:11px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0">
+        
+        <!-- Hamburger Menu Button -->
+        <button onclick="tgSide()" style="background:transparent;border:none;font-size:22px;color:#1e293b;cursor:pointer;padding:0;display:flex;align-items:center;">☰</button>
+        
+        <p style="font-size:12px;color:#64748b;flex:1;margin:0;">${fDlong(tod())}</p>
         <span class="badge" style="background:#8b5cf615;color:#8b5cf6">Mufattish</span>
       </header>
       <div id="ct" style="flex:1;overflow-y:auto;padding:16px">${mC()}</div>
     </div>
   </div>`;
 }
-
 function mC(){switch(S.page){case'cl':return mfCls();case'at':return mfAt();case'rp':return mfRp();default:return mfOv();}}
 
 function mfOv(){
