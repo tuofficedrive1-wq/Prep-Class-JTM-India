@@ -71,6 +71,17 @@ tr:hover td{background:#fafcff}
 .stuav{width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;flex-shrink:0}
 .attrow{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-top:1px solid #f8fafc;flex-wrap:wrap;gap:8px}
 .grbox{display:inline-flex;padding:4px 10px;border-radius:20px;font-size:12px;font-weight:700}
+  /* Desktop View Auto Adjust */
+@media (min-width: 768px) {
+  .sb { 
+    position: relative !important; 
+    z-index: 10; 
+  } /* Desktop par sidebar screen ke andar fit ho jayega */
+  
+  #sov { 
+    display: none !important; 
+  } /* Desktop par dark background hide rahega */
+}
 </style>
 </head>
 <body>
@@ -198,7 +209,12 @@ function dLogin() {
 }
 
 function render(){document.getElementById('root').innerHTML=S.user?dashHTML():loginHTML();rm();}
-function navTo(p){S.page=p;S.side=false;S.q='';uc();}
+function navTo(p){
+  S.page = p;
+  S.side = false; // Menu click hone par sidebar band karne ke liye
+  S.q = '';
+  render(); // uc() hata kar render() lagaya gaya hai
+}
 function tgSide(){S.side=!S.side;const sb=document.getElementById('sb');if(sb)sb.className='sb '+(S.side?'sb-on':'sb-off');const ov=document.getElementById('sov');if(ov)ov.style.display=S.side?'block':'none';}
 function logout(){sessionStorage.removeItem('loggedInUser');S.user=null;S.page='ov';render();}
 
