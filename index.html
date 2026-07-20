@@ -183,8 +183,7 @@ function loginHTML(){
 }
 
 async function dLogin() {
-  // Username ki jagah ab hum email ka istemal karenge
-  const email = document.getElementById('lun').value.trim(); 
+  const email = document.getElementById('lun').value.trim();
   const pw = document.getElementById('lpw').value;
   const err = document.getElementById('lerr');
 
@@ -195,27 +194,40 @@ async function dLogin() {
   }
   
   try {
-    // Firebase Authentication se direct login check karein
+    // 1. Pehle Firebase Auth se id password verify karein
     const userCredential = await firebase.auth().signInWithEmailAndPassword(email, pw);
     
-    // Login kamyab hone par hum check karenge ke user admin hai ya nahi
-    // Hum S.users array me check kar rahe hain jo apne banaya hai
-    const userDoc = S.users.find(u => u.username === email || u.un === email);
+    // Auth se successful login hone ke baad email nikalen
+    const loggedInEmail = userCredential.user.email;
     
+    // 2. Apne Firestore wale S.users data me is email ko dhoonden
+    const userDoc = S.users.find(u => 
+      (u.username === loggedInEmail || u.email === loggedInEmail)
+    );
+    
+    // 3. Check karein ke kiya is user ka role admin hai?
     if (userDoc && userDoc.role === 'admin') {
+      
+      // Agar role admin hai, toh dashboard open kar dein
       sessionStorage.setItem('loggedInUser', JSON.stringify(userDoc));
       S.user = userDoc;
       S.page = 'ov';
       render();
+      
     } else {
+      
+      // Agar role admin nahi hai (maslan teacher ya koi aur), toh rok dein
       err.textContent = 'Aapke paas admin panel ka access nahi hai.';
       err.style.display = 'block';
-      // Agar admin nahi hai to logout karwa dein
-      await firebase.auth().signOut();
+      await firebase.auth().signOut(); // User ko wapas logout kar dein
+      
     }
+    
   } catch (error) {
+    // Agar id password hi galat ho
     err.textContent = 'Galat email ya password — dobara koshish karen'; 
     err.style.display = 'block';
+    console.error("Login Error:", error);
   }
 }
 
