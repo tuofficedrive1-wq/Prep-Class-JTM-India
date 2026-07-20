@@ -91,6 +91,7 @@ tr:hover td{background:#fafcff}
 
 <!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore-compat.js"></script>
 <!-- Shared Config -->
 <script src="firebase-config.js"></script>
@@ -159,13 +160,13 @@ function loginHTML(){
     <div style="background:#fff;border-radius:22px;padding:30px;box-shadow:0 25px 60px rgba(0,0,0,.35)">
       <h2 style="font-size:17px;font-weight:700;margin-bottom:22px;color:#0f172a">Login Karen</h2>
       <div style="display:flex;flex-direction:column;gap:16px">
-        <div>
-          <label class="fl">Username</label>
-          <div style="position:relative">
-            <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:15px">👤</span>
-            <input id="lun" class="fi" placeholder="apna username likhein" style="padding-left:34px" onkeydown="if(event.key==='Enter')dLogin()"/>
-          </div>
-        </div>
+       <div>
+  <label class="fl">Email Address</label>
+  <div style="position:relative">
+    <span style="position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:15px">📧</span>
+    <input id="lun" class="fi" type="email" placeholder="apni email likhein" style="padding-left:34px" onkeydown="if(event.key==='Enter')dLogin()"/>
+  </div>
+</div>
         <div>
           <label class="fl">Password</label>
           <div style="position:relative">
@@ -181,30 +182,40 @@ function loginHTML(){
   </div></div>`;
 }
 
-function dLogin() {
-  const un = document.getElementById('lun').value.trim();
+async function dLogin() {
+  // Username ki jagah ab hum email ka istemal karenge
+  const email = document.getElementById('lun').value.trim(); 
   const pw = document.getElementById('lpw').value;
   const err = document.getElementById('lerr');
-  if (!un || !pw) { err.textContent = 'Username aur password dono zaruri hain'; err.style.display = 'block'; return; }
+
+  if (!email || !pw) { 
+    err.textContent = 'Email aur password dono zaruri hain'; 
+    err.style.display = 'block'; 
+    return; 
+  }
   
-  const f = S.users.find(u => 
-    (u.username === un || u.un === un) && 
-    (u.password === pw || u.pw === pw)
-  );
-  
-  if (f) {
-    sessionStorage.setItem('loggedInUser', JSON.stringify(f));
-    if (f.role === 'admin') {
-      S.user = f;
+  try {
+    // Firebase Authentication se direct login check karein
+    const userCredential = await firebase.auth().signInWithEmailAndPassword(email, pw);
+    
+    // Login kamyab hone par hum check karenge ke user admin hai ya nahi
+    // Hum S.users array me check kar rahe hain jo apne banaya hai
+    const userDoc = S.users.find(u => u.username === email || u.un === email);
+    
+    if (userDoc && userDoc.role === 'admin') {
+      sessionStorage.setItem('loggedInUser', JSON.stringify(userDoc));
+      S.user = userDoc;
       S.page = 'ov';
       render();
-    } else if (f.role === 'teacher') {
-      window.location.href = 'teacher.html';
-    } else if (f.role === 'mufattish') {
-      window.location.href = 'mufattish.html';
+    } else {
+      err.textContent = 'Aapke paas admin panel ka access nahi hai.';
+      err.style.display = 'block';
+      // Agar admin nahi hai to logout karwa dein
+      await firebase.auth().signOut();
     }
-  } else {
-    err.textContent = 'Galat username ya password — dobara koshish karen'; err.style.display = 'block';
+  } catch (error) {
+    err.textContent = 'Galat email ya password — dobara koshish karen'; 
+    err.style.display = 'block';
   }
 }
 
