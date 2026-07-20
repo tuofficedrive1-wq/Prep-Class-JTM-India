@@ -545,25 +545,70 @@ function sCls(){
   S.classes=d?S.classes.map(c=>c.id===d.id?obj:c):[...S.classes,obj];
   sv.c();cm();toast(d?'Class update ho gayi ✓':'Nayi Class ban gayi ✓');uc();
 }
-function sUser(){
-  const d=S.modal.data;const role=S.modal.type==='tea'?'teacher':'mufattish';
-  const nm=document.getElementById('mnm').value.trim();
-  const un=document.getElementById('mun').value.trim();
-  const pw=document.getElementById('mpw').value;
-  const ph=document.getElementById('mph').value;
-  let ok=true;
-  const se=(id)=>{document.getElementById(id).style.display='block';ok=false;};
-  const he=(id)=>{document.getElementById(id).style.display='none';};
-  he('nmerr');he('unerr');he('pwerr');
-  if(!nm)se('nmerr');
-  if(!un)se('unerr');
-  else if(S.users.find(u=>(u.un===un||u.username===un)&&u.id!==d?.id))se('unerr');
-  if(!pw)se('pwerr');else if(pw.length<4)se('pwerr');
-  if(!ok)return;
-  const obj={id:d?.id||uid(),nm,name:nm,un,username:un,pw,password:pw,ph,role,ca:d?.ca||new Date().toISOString()};
-  S.users=d?S.users.map(u=>u.id===d.id?obj:u):[...S.users,obj];
-  sv.u();cm();toast(d?'Update ho gaya ✓':'Naya account ban gaya ✓');uc();
+// Function ko async banayen taake Firebase se communicate kar sake
+async function sUser() {
+  const d = S.modal.data; 
+  const role = S.modal.type === 'tea' ? 'teacher' : 'mufattish';
+  
+  const nm = document.getElementById('mnm').value.trim();
+  const un = document.getElementById('mun').value.trim(); // DHYAN RAHE: Ab yahan username ki jagah Email likhni hai
+  const pw = document.getElementById('mpw').value;
+  const ph = document.getElementById('mph').value;
+  
+  let ok = true;
+  const se = (id) => { document.getElementById(id).style.display = 'block'; ok = false; };
+  const he = (id) => { document.getElementById(id).style.display = 'none'; };
+  
+  he('nmerr'); he('unerr'); he('pwerr');
+  
+  if(!nm) se('nmerr');
+  if(!un) se('unerr');
+  else if(S.users.find(u => (u.un === un || u.username === un) && u.id !== d?.id)) se('unerr');
+  
+  // Firebase Auth ke liye password kam az kam 6 characters ka hona zaroori hai
+  if(!pw) se('pwerr'); else if (pw.length < 6) { 
+    document.getElementById('pwerr').innerText = 'Password kam az kam 6 harf ka hona chahiye';
+    se('pwerr'); 
+  }
+  
+  if(!ok) return;
+
+  try {
+    // Agar naya user ban raha hai (Edit nahi ho raha)
+    if (!d) {
+      
+      // IMPORTANT: Admin ko logout kiye bina naya account banane ke liye hum ek "Secondary App" ka trick use karenge
+      const secondaryApp = firebase.apps.length > 1 ? firebase.app("Secondary") : firebase.initializeApp(firebase.app().options, "Secondary");
+      
+      // 1. Firebase Authentication me user ka account banayein
+      await secondaryApp.auth().createUserWithEmailAndPassword(un, pw);
+      await secondaryApp.auth().signOut(); // Foran background me logout kar dein taake admin ka session kharab na ho
+      
+      // 2. Firestore ke 'users' collection me bhi data daal dein taake login ke waqt role check ho sake
+      await firebase.firestore().collection('users').add({
+        email: un,
+        role: role,
+        name: nm
+      });
+    }
+
+    // 3. Baqi aapka purana local dashboard save karne ka tareeqa
+    const obj = { id: d?.id || uid(), nm, name: nm, un, username: un, email: un, pw, password: pw, ph, role, ca: d?.ca || new Date().toISOString() };
+    
+    S.users = d ? S.users.map(u => u.id === d.id ? obj : u) : [...S.users, obj];
+    sv.u(); // Local DB update
+    
+    cm(); // Form band karein
+    toast(d ? 'Update ho gaya ✓' : 'Naya account ban gaya ✓');
+    uc(); // Dashboard refresh karein
+
+  } catch (error) {
+    // Agar email format galat ho ya user pehle se bana ho to error dikhayega
+    alert("User banane me masla aya: " + error.message);
+    console.error(error);
+  }
 }
+  
 function dCls(id){
   if(!confirm('Class delete karni hai?'))return;
   S.classes=S.classes.filter(c=>c.id!==id);S.students=S.students.filter(s=>s.cId!==id);S.att=S.att.filter(a=>a.cId!==id);S.reports=S.reports.filter(r=>r.cId!==id);
