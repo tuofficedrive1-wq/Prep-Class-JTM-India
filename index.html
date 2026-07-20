@@ -246,7 +246,13 @@ function navTo(p){
   render(); // uc() hata kar render() lagaya gaya hai
 }
 function tgSide(){S.side=!S.side;const sb=document.getElementById('sb');if(sb)sb.className='sb '+(S.side?'sb-on':'sb-off');const ov=document.getElementById('sov');if(ov)ov.style.display=S.side?'block':'none';}
-function logout(){sessionStorage.removeItem('loggedInUser');S.user=null;S.page='ov';render();}
+async function logout(){
+  await firebase.auth().signOut(); // Firebase se logout
+  sessionStorage.removeItem('loggedInUser'); // Local storage se hatayein
+  S.user=null;
+  S.page='ov';
+  render();
+}
 
 function dashHTML(){
   const uName = S.user.name || S.user.nm || 'Admin';
@@ -617,32 +623,38 @@ function dCls(id){
 function dUser(id){if(!confirm('Delete karna hai?'))return;S.users=S.users.filter(u=>u.id!==id);sv.u();toast('Delete ho gaya');uc();}
 
 async function init(){
-  document.getElementById('root').innerHTML = '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f172a;color:#fff;font-size:18px;font-weight:bold;">Firebase se data load ho raha hai... ⏳</div>';
+  const savedUser = sessionStorage.getItem('loggedInUser');
   
-  let u = await db.get(K.U);
-  if(!u?.length) { 
-    u = [ADMIN]; 
-    db.set(K.U, u); 
+  // 1. Agar user login nahi hai, to data fetch kiye bina seedha login form dikhao
+  if (!savedUser) {
+    render();
+    return;
   }
   
-  S.users = u;
-  S.classes = (await db.get(K.C)) || [];
-  S.students = (await db.get(K.S)) || [];
-  S.att = (await db.get(K.A)) || [];
-  S.reports = (await db.get(K.R)) || [];
+  // 2. Agar user login hai, tabhi loading screen dikhao aur data fetch karo
+  document.getElementById('root').innerHTML = '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f172a;color:#fff;font-size:18px;font-weight:bold;">Firebase se data load ho raha hai... ⏳</div>';
   
-  const savedUser = sessionStorage.getItem('loggedInUser');
-  if(savedUser) {
+  try {
+    let u = await db.get(K.U);
+    S.users = u || [];
+    S.classes = (await db.get(K.C)) || [];
+    S.students = (await db.get(K.S)) || [];
+    S.att = (await db.get(K.A)) || [];
+    S.reports = (await db.get(K.R)) || [];
+    
     const parsed = JSON.parse(savedUser);
     if(parsed.role === 'admin') {
       S.user = parsed;
       S.page = 'ov';
-      render();
-      return;
     }
+    render();
+  } catch (error) {
+    console.error("Data load error:", error);
+    // Agar data fetch karte waqt error aaye to logout kar do
+    sessionStorage.removeItem('loggedInUser');
+    S.user = null;
+    render();
   }
-  
-  render();
 }
 init();
 </script>
