@@ -114,7 +114,7 @@ const noCls=(msg='Koi class assign nahi',sub='Admin se class assignment karwaen'
 let S={
   user:null,page:'ov',side:false,
   users:[],classes:[],students:[],att:[],reports:[],
-  q:'',attDate:tod(),attCls:'',
+  q:'',attDate:tod(),attCls:'', activeCls:'', // activeCls naya add kiya hai
   rM:new Date().getMonth()+1,rY:new Date().getFullYear(),
   modal:{show:false,type:'',data:null}
 };
@@ -145,7 +145,30 @@ function modalHTML(){
   </div></div>`;
 }
 
-function myCls(){return S.classes.find(c=>c.tId===S.user.id);}
+function allMyCls(){ return S.classes.filter(c=>c.tId===S.user.id); }
+
+// Currently selected class nikalne ke liye
+function myCls(){
+  const all = allMyCls();
+  if(!all.length) return null;
+  if(S.activeCls) {
+    const found = all.find(c=>c.id===S.activeCls);
+    if(found) return found;
+  }
+  return all[0]; // Agar koi select nahi ki toh pehli class dikhayega
+}
+
+// Dropdown menu banane ka naya function
+function clsSelectorHTML(){
+  const all = allMyCls();
+  if(all.length <= 1) return ''; // Agar ek hi class hai toh dropdown hide rahega
+  return `<div style="margin-bottom:6px;background:#fff;padding:12px 16px;border-radius:12px;border:1px solid #e2e8f0;display:flex;align-items:center;gap:12px;box-shadow:0 1px 3px rgba(0,0,0,.04)">
+    <label style="font-size:13px;font-weight:700;color:#475569;white-space:nowrap;margin:0;">🏫 Class Badlein:</label>
+    <select class="fi" onchange="S.activeCls=this.value;uc()" style="font-weight:600;color:#1e293b;padding:8px 12px;cursor:pointer;flex:1">
+      ${all.map(c=>`<option value="${c.id}" ${myCls()?.id===c.id?'selected':''}>${esc(c.n)} ${esc(c.s)} ${c.timing?`(${esc(c.timing)})`:''}</option>`).join('')}
+    </select>
+  </div>`;
+}
 function myStus(){const mc=myCls();return mc?S.students.filter(s=>s.cId===mc.id):[];}
 
 function render(){document.getElementById('root').innerHTML=dashHTML();rm();}
@@ -218,7 +241,9 @@ function tOv(){
   const mPrs=mAtt.filter(a=>a.st==='present').length;
   const mPp=pct(mPrs,ms.length*mDays);
   const nameDisplay = S.user.nm || S.user.name || 'Teacher';
+  
   return `<div class="gap">
+  ${clsSelectorHTML()} 
   <div class="bw">
     <div><h1 class="pt">As-salamu Alaykum! 👋</h1><p class="ps">${esc(nameDisplay)}'s Dashboard</p></div>
     <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:8px 14px;font-size:12px;color:#15803d;font-weight:600">🟢 Active Teacher</div>
@@ -263,6 +288,7 @@ function tStu(){
   const ms=myStus();const q=S.q.toLowerCase();
   const list=ms.filter(s=>!q||[s.n,s.fn,s.sid].some(v=>v?.toLowerCase().includes(q)));
   return `<div class="gap">
+  ${clsSelectorHTML()}
   <div class="bw">
     <div><h1 class="pt">Students</h1><p class="ps">${esc(mc.n)} ${esc(mc.s)} — ${ms.length} students</p></div>
     <button class="btn bb" onclick="om('stu',null)">➕ Naya Student Add Karo</button>
@@ -305,6 +331,7 @@ function tAtt(){
   const lt=tda.filter(a=>a.st==='late').length;
   const pp=pct(prs,ms.length);
   return `<div class="gap">
+  ${clsSelectorHTML()}
   <div><h1 class="pt">Hazri</h1><p class="ps">${esc(mc.n)} ${esc(mc.s)}</p></div>
   <div style="display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap">
     <div style="flex:1;min-width:160px"><label class="fl">Tarikh Chunen</label><input type="date" class="fi" value="${S.attDate}" onchange="S.attDate=this.value;uc()"/></div>
@@ -337,6 +364,7 @@ function tRp(){
   const mOptions = URMO.map((m,i)=>`<option value="${i+1}"${S.rM===i+1?' selected':''}>${m}</option>`).join('');
   
   return `<div class="gap">
+  ${clsSelectorHTML()}
   <div><h1 class="pt">Monthly Report</h1></div>
   <div style="display:flex;gap:10px">
     <select class="fi" onchange="S.rM=+this.value;uc()">${mOptions}</select>
