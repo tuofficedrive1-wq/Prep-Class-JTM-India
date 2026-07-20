@@ -555,21 +555,34 @@ function clsBody(){
     
   </div>`;
 }
-function userBody(){
-  const d=S.modal.data||{};
-  const nDisplay = d.nm||d.name||'';
-  const uDisplay = d.un||d.username||'';
-  const pDisplay = d.pw||d.password||'';
+function userBody() {
+  const d = S.modal.data || {}; // Agar edit par click kiya hai toh purana data aayega
+
   return `
-  <div><label class="fl">Mukammal Naam *</label><input id="mnm" class="fi" value="${esc(nDisplay)}" placeholder="Misal: Ahmad Ali"/><p id="nmerr" class="ferr">Naam zaruri hai</p></div>
-  <div><label class="fl">Username *</label><input id="mun" class="fi" value="${esc(uDisplay)}" placeholder="Misal: ahmad123"/><p id="unerr" class="ferr">Username zaruri hai</p></div>
-  <div><label class="fl">Password *</label>
-    <div style="position:relative">
-      <input id="mpw" class="fi" type="password" value="${esc(pDisplay)}" placeholder="Kam az kam 4 harf" style="padding-right:38px"/>
-      <button onclick="var i=document.getElementById('mpw');i.type=i.type==='password'?'text':'password'" style="position:absolute;right:11px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:16px;cursor:pointer;color:#94a3b8">👁️</button>
-    </div><p id="pwerr" class="ferr">Password zaruri hai</p>
-  </div>
-  <div><label class="fl">Phone Number</label><input id="mph" class="fi" value="${esc(d.ph||'')}" placeholder="03XX-XXXXXXX"/></div>`;
+  <div style="display:flex;flex-direction:column;gap:14px;">
+    
+    <div>
+      <label class="fl">Pura Naam</label>
+      <input id="unm" class="fi" value="${esc(d.nm || d.name || '')}" placeholder="Pura naam likhein"/>
+    </div>
+
+    <div>
+      <label class="fl">Email ID</label>
+      <input id="uemail" type="email" class="fi" value="${esc(d.email || '')}" placeholder="Misal: teacher@gmail.com"/>
+    </div>
+
+    <div>
+      <label class="fl">Phone Number</label>
+      <!-- oninput ki wajah se isme sirf 10 number hi type ho payenge, text type nahi hoga -->
+      <input id="uphone" type="tel" class="fi" value="${esc(d.phone || '')}" placeholder="10 digits ka mobile number" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)"/>
+    </div>
+
+    <div>
+      <label class="fl">Password</label>
+      <input id="upw" type="text" class="fi" placeholder="${d.id ? 'Naya password (agar change nahi karna toh khali chhod dein)' : 'Password banayein'}"/>
+    </div>
+
+  </div>`;
 }
 
 function sCls(){
@@ -583,50 +596,85 @@ async function sUser() {
   const d = S.modal.data; 
   const role = S.modal.type === 'tea' ? 'teacher' : 'mufattish';
   
-  const nm = document.getElementById('mnm').value.trim();
-  const un = document.getElementById('mun').value.trim(); // DHYAN RAHE: Ab yahan username ki jagah Email likhni hai
-  const pw = document.getElementById('mpw').value;
-  const ph = document.getElementById('mph').value;
+  // Naye HTML ids ke hisaab se data pakadna
+  const nm = document.getElementById('unm').value.trim();
+  const email = document.getElementById('uemail').value.trim(); 
+  const ph = document.getElementById('uphone').value.trim();
+  const pw = document.getElementById('upw').value;
   
-  let ok = true;
-  const se = (id) => { document.getElementById(id).style.display = 'block'; ok = false; };
-  const he = (id) => { document.getElementById(id).style.display = 'none'; };
-  
-  he('nmerr'); he('unerr'); he('pwerr');
-  
-  if(!nm) se('nmerr');
-  if(!un) se('unerr');
-  else if(S.users.find(u => (u.un === un || u.username === un) && u.id !== d?.id)) se('unerr');
-  
-  // Firebase Auth ke liye password kam az kam 6 characters ka hona zaroori hai
-  if(!pw) se('pwerr'); else if (pw.length < 6) { 
-    document.getElementById('pwerr').innerText = 'Password kam az kam 6 harf ka hona chahiye';
-    se('pwerr'); 
+  // --- Validation Shuru ---
+  if (!nm) {
+    alert("Pura naam likhna zaroori hai!");
+    return;
   }
   
-  if(!ok) return;
+  if (!email) {
+    alert("Email ID likhna zaroori hai!");
+    return;
+  }
+  
+  // Check karna ki Email pehle se kisi aur user ka toh nahi hai
+  if (S.users.find(u => (u.email === email || u.username === email) && u.id !== d?.id)) {
+    alert("Ye Email ID pehle se kisi dusre account me use ho rahi hai!");
+    return;
+  }
+
+  // Phone number ki validation (Sirf 10 digits hone chahiye)
+  if (!ph || ph.length !== 10) {
+    alert("Phone number exactly 10 digits ka hona zaroori hai!");
+    return;
+  }
+
+  // Password validation (Naye user ke liye password zaroori hai, edit me khali chhod sakte hain)
+  if (!d && !pw) {
+    alert("Naye account ke liye password banena zaroori hai!");
+    return;
+  }
+  if (pw && pw.length < 6) {
+    alert("Password kam az kam 6 harf (characters) ka hona chahiye!");
+    return;
+  }
+  // --- Validation Khatam ---
+
+  // Agar account Edit ho raha hai aur naya password khali hai, toh purana password hi rakhein
+  const finalPw = pw || (d ? d.password || d.pw : '');
 
   try {
     // Agar naya user ban raha hai (Edit nahi ho raha)
     if (!d) {
       
-      // IMPORTANT: Admin ko logout kiye bina naya account banane ke liye hum ek "Secondary App" ka trick use karenge
+      // IMPORTANT: Admin ko logout kiye bina naya account banane ke liye "Secondary App" ka trick
       const secondaryApp = firebase.apps.length > 1 ? firebase.app("Secondary") : firebase.initializeApp(firebase.app().options, "Secondary");
       
-      // 1. Firebase Authentication me user ka account banayein
-      await secondaryApp.auth().createUserWithEmailAndPassword(un, pw);
-      await secondaryApp.auth().signOut(); // Foran background me logout kar dein taake admin ka session kharab na ho
+      // 1. Firebase Authentication me user ka account banayein (Email se)
+      await secondaryApp.auth().createUserWithEmailAndPassword(email, finalPw);
+      await secondaryApp.auth().signOut(); // Foran background me logout kar dein
       
-      // 2. Firestore ke 'users' collection me bhi data daal dein taake login ke waqt role check ho sake
+      // 2. Firestore ke 'users' collection me data daal dein
       await firebase.firestore().collection('users').add({
-        email: un,
+        email: email,
+        phone: ph, // Phone number bhi Firestore me save kar rahe hain
         role: role,
         name: nm
       });
     }
 
-    // 3. Baqi aapka purana local dashboard save karne ka tareeqa
-    const obj = { id: d?.id || uid(), nm, name: nm, un, username: un, email: un, pw, password: pw, ph, role, ca: d?.ca || new Date().toISOString() };
+    // 3. Local dashboard save karne ka tareeqa
+    // 'username' aur 'un' me bhi email save kar rahe hain taaki agar aapke dashboard me kahin purana code use ho raha ho toh wo crash na kare.
+    const obj = { 
+      id: d?.id || uid(), 
+      nm: nm, 
+      name: nm, 
+      email: email, 
+      username: email, 
+      un: email,
+      pw: finalPw, 
+      password: finalPw, 
+      ph: ph,
+      phone: ph,
+      role: role, 
+      ca: d?.ca || new Date().toISOString() 
+    };
     
     S.users = d ? S.users.map(u => u.id === d.id ? obj : u) : [...S.users, obj];
     sv.u(); // Local DB update
@@ -636,7 +684,7 @@ async function sUser() {
     uc(); // Dashboard refresh karein
 
   } catch (error) {
-    // Agar email format galat ho ya user pehle se bana ho to error dikhayega
+    // Agar email format galat ho ya user Firebase me pehle se bana ho to error dikhayega
     alert("User banane me masla aya: " + error.message);
     console.error(error);
   }
