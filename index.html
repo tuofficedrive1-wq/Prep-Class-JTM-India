@@ -585,11 +585,28 @@ function userBody() {
   </div>`;
 }
 
-function sCls(){
-  const d=S.modal.data;
-  const obj={id:d?.id||uid(),n:document.getElementById('mn').value,s:document.getElementById('ms').value,timing:document.getElementById('mt').value,room:document.getElementById('mr').value,tId:document.getElementById('mte').value,mId:document.getElementById('mmu').value,notes:document.getElementById('mno').value,ca:d?.ca||new Date().toISOString()};
-  S.classes=d?S.classes.map(c=>c.id===d.id?obj:c):[...S.classes,obj];
-  sv.c();cm();toast(d?'Class update ho gayi ✓':'Nayi Class ban gayi ✓');uc();
+  function sCls(){
+  const d = S.modal.data;
+  
+  const obj = {
+    id: d?.id || uid(),
+    region: document.getElementById('mreg').value,     // Naya option
+    state: document.getElementById('msta').value,      // Naya option
+    jamia: document.getElementById('mjam').value,      // Naya option
+    n: document.getElementById('mn').value,            // Class ka naam
+    timing: document.getElementById('mt').value,
+    tId: document.getElementById('mte').value,
+    mId: document.getElementById('mmu').value,
+    notes: document.getElementById('mno').value,
+    ca: d?.ca || new Date().toISOString()
+  };
+  
+  S.classes = d ? S.classes.map(c => c.id === d.id ? obj : c) : [...S.classes, obj];
+  
+  sv.c(); 
+  cm(); 
+  toast(d ? 'Class update ho gayi ✓' : 'Nayi Class ban gayi ✓'); 
+  uc();
 }
 // Function ko async banayen taake Firebase se communicate kar sake
 async function sUser() {
