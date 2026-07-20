@@ -162,92 +162,6 @@ async function logout(){
   window.location.href='index.html';
 }
 
-async function init(){
-  const rootEl = document.getElementById('root');
-  if(rootEl) {
-    rootEl.innerHTML = '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f172a;color:#fff;font-size:18px;font-weight:bold;">Account verify ho raha hai... ⏳</div>';
-  }
-
-  // Firebase ko check karne dein ke Teacher properly login hai ya nahi
-  firebase.auth().onAuthStateChanged(async (firebaseUser) => {
-    if (firebaseUser) {
-      const savedUser = sessionStorage.getItem('loggedInUser');
-      if(!savedUser) { window.location.href = 'index.html'; return; }
-      
-      S.user = JSON.parse(savedUser);
-      if(S.user.role !== 'teacher') { window.location.href = 'index.html'; return; }
-
-      try {
-        // Auth verify hone ke baad hi data fetch karein (Ab permission error nahi aayega)
-        S.users = (await db.get(K.U)) || []; 
-        S.classes = (await db.get(K.C)) || [];
-        S.students = (await db.get(K.S)) || [];
-        S.att = (await db.get(K.A)) || [];
-        S.reports = (await db.get(K.R)) || [];
-        
-        // Local ID match karne wala code
-        const localUser = S.users.find(u => u.un === S.user.email || u.email === S.user.email || u.username === S.user.email);
-        if(localUser) {
-            S.user.id = localUser.id;
-        }
-
-        render(); // Dashboard load karein
-      } catch (error) {
-        console.error("Data load error:", error);
-        await logout(); // Agar error aaye toh wapas login page par bhej dein
-      }
-    } else {
-      // Agar Firebase se logged out hai
-      sessionStorage.removeItem('loggedInUser');
-      window.location.href = 'index.html';
-    }
-  });
-}
-
-// Function chalane ke liye
-init();
-
-async function init(){
-  const rootEl = document.getElementById('root');
-  if(rootEl) {
-    rootEl.innerHTML = '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f172a;color:#fff;font-size:18px;font-weight:bold;">Account verify ho raha hai... ⏳</div>';
-  }
-
-  // Firebase ko check karne dein ke Teacher properly login hai ya nahi
-  firebase.auth().onAuthStateChanged(async (firebaseUser) => {
-    if (firebaseUser) {
-      const savedUser = sessionStorage.getItem('loggedInUser');
-      if(!savedUser) { window.location.href = 'index.html'; return; }
-      
-      S.user = JSON.parse(savedUser);
-      if(S.user.role !== 'teacher') { window.location.href = 'index.html'; return; }
-
-      try {
-        // Auth verify hone ke baad data fetch karein (Ab permission error nahi aayega)
-        S.users = (await db.get(K.U)) || []; 
-        S.classes = (await db.get(K.C)) || [];
-        S.students = (await db.get(K.S)) || [];
-        S.att = (await db.get(K.A)) || [];
-        S.reports = (await db.get(K.R)) || [];
-        
-        // Local ID match karne wala code
-        const localUser = S.users.find(u => u.un === S.user.email || u.email === S.user.email || u.username === S.user.email);
-        if(localUser) {
-            S.user.id = localUser.id;
-        }
-
-        render(); // Dashboard load karein
-      } catch (error) {
-        console.error("Data load error:", error);
-        await logout(); // Agar error aaye toh wapas login page par bhej dein
-      }
-    } else {
-      // Agar Firebase se logged out hai
-      sessionStorage.removeItem('loggedInUser');
-      window.location.href = 'index.html';
-    }
-  });
-}
 function uc(){document.getElementById('ct').innerHTML=tC();}
 
 function dashHTML(){
@@ -498,27 +412,52 @@ function sRpts(){
 }
 
 async function init(){
-  const savedUser = sessionStorage.getItem('loggedInUser');
-  if(!savedUser) { window.location.href = 'index.html'; return; }
-  S.user = JSON.parse(savedUser);
-  if(S.user.role !== 'teacher') { window.location.href = 'index.html'; return; }
-
-  // Yahan humne S.users ko bhi database se fetch kar liya hai taake IDs match ki ja sakein
-  S.users = (await db.get(K.U)) || []; 
-  S.classes = (await db.get(K.C)) || [];
-  S.students = (await db.get(K.S)) || [];
-  S.att = (await db.get(K.A)) || [];
-  S.reports = (await db.get(K.R)) || [];
-  
-  // Ye code Teacher ki Firebase login email ke zariye uski purani Local ID dhoondega
-  const localUser = S.users.find(u => u.un === S.user.email || u.email === S.user.email || u.username === S.user.email);
-  
-  // Agar ID mil gayi to usay system me update kar dega
-  if(localUser) {
-      S.user.id = localUser.id;
+  const rootEl = document.getElementById('root');
+  if(rootEl) {
+    rootEl.innerHTML = '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f172a;color:#fff;font-size:18px;font-weight:bold;">Account verify ho raha hai... ⏳</div>';
   }
 
-  render();
+  // Firebase ko check karne dein ke Teacher properly login hai ya nahi
+  firebase.auth().onAuthStateChanged(async (firebaseUser) => {
+    if (firebaseUser) {
+      const savedUser = sessionStorage.getItem('loggedInUser');
+      if(!savedUser) { window.location.href = 'index.html'; return; }
+      
+      S.user = JSON.parse(savedUser);
+      if(S.user.role !== 'teacher') { window.location.href = 'index.html'; return; }
+
+      try {
+        // Auth verify hone ke baad hi data fetch karein
+        S.users = (await db.get(K.U)) || []; 
+        S.classes = (await db.get(K.C)) || [];
+        S.students = (await db.get(K.S)) || [];
+        S.att = (await db.get(K.A)) || [];
+        S.reports = (await db.get(K.R)) || [];
+        
+        // 100% Accurate Email Matching (Capital/Small letters ka masla khatam)
+        const userEmail = firebaseUser.email.toLowerCase();
+        const localUser = S.users.find(u => 
+          (u.un && u.un.toLowerCase() === userEmail) || 
+          (u.email && u.email.toLowerCase() === userEmail) || 
+          (u.username && u.username.toLowerCase() === userEmail)
+        );
+        
+        if(localUser) {
+            // Local aur Auth data ko mukammal mila dein
+            S.user = { ...S.user, ...localUser };
+            S.user.id = localUser.id;
+        }
+
+        render(); 
+      } catch (error) {
+        console.error("Data load error:", error);
+        await logout(); 
+      }
+    } else {
+      sessionStorage.removeItem('loggedInUser');
+      window.location.href = 'index.html';
+    }
+  });
 }
 init();
 </script>
