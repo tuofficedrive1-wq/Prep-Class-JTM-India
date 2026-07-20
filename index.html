@@ -194,37 +194,44 @@ async function dLogin() {
   }
   
   try {
-    // 1. Pehle Firebase Auth se id password verify karein
+    // 1. Pehle Firebase Auth se login karein
     const userCredential = await firebase.auth().signInWithEmailAndPassword(email, pw);
-    
-    // Auth se successful login hone ke baad email nikalen
     const loggedInEmail = userCredential.user.email;
     
-    // 2. Apne Firestore wale S.users data me is email ko dhoonden
-    const userDoc = S.users.find(u => 
-      (u.username === loggedInEmail || u.email === loggedInEmail)
-    );
+    // 2. Direct Firestore se sirf is email ka data nikalen
+    // (Ensure karein ke collection ka naam wahi hai jo aapke DB me hai, yahan 'users' use kiya hai)
+    const snapshot = await firebase.firestore().collection('users').where('email', '==', loggedInEmail).get();
+    
+    if (snapshot.empty) {
+      err.textContent = 'Aapka account database me nahi mila.';
+      err.style.display = 'block';
+      await firebase.auth().signOut();
+      return;
+    }
+
+    let userDoc = null;
+    snapshot.forEach(doc => {
+      userDoc = { id: doc.id, ...doc.data() };
+    });
     
     // 3. Check karein ke kiya is user ka role admin hai?
     if (userDoc && userDoc.role === 'admin') {
       
-      // Agar role admin hai, toh dashboard open kar dein
+      // Agar role admin hai, toh login successful
       sessionStorage.setItem('loggedInUser', JSON.stringify(userDoc));
       S.user = userDoc;
       S.page = 'ov';
-      render();
+      
+      // Login hone ke baad ab system ka baqi data load karein
+      await init(); 
       
     } else {
-      
-      // Agar role admin nahi hai (maslan teacher ya koi aur), toh rok dein
       err.textContent = 'Aapke paas admin panel ka access nahi hai.';
       err.style.display = 'block';
-      await firebase.auth().signOut(); // User ko wapas logout kar dein
-      
+      await firebase.auth().signOut();
     }
     
   } catch (error) {
-    // Agar id password hi galat ho
     err.textContent = 'Galat email ya password — dobara koshish karen'; 
     err.style.display = 'block';
     console.error("Login Error:", error);
