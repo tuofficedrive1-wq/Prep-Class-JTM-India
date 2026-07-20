@@ -194,12 +194,10 @@ async function dLogin() {
   }
   
   try {
-    // 1. Pehle Firebase Auth se login karein
     const userCredential = await firebase.auth().signInWithEmailAndPassword(email, pw);
     const loggedInEmail = userCredential.user.email;
     
-    // 2. Direct Firestore se sirf is email ka data nikalen
-    // (Ensure karein ke collection ka naam wahi hai jo aapke DB me hai, yahan 'users' use kiya hai)
+    // Firestore se us user ka role check karein
     const snapshot = await firebase.firestore().collection('users').where('email', '==', loggedInEmail).get();
     
     if (snapshot.empty) {
@@ -214,19 +212,21 @@ async function dLogin() {
       userDoc = { id: doc.id, ...doc.data() };
     });
     
-    // 3. Check karein ke kiya is user ka role admin hai?
+    // Role ke hisaab se unko alag alag pages par redirect karein
     if (userDoc && userDoc.role === 'admin') {
-      
-      // Agar role admin hai, toh login successful
       sessionStorage.setItem('loggedInUser', JSON.stringify(userDoc));
-      S.user = userDoc;
-      S.page = 'ov';
-      
-      // Login hone ke baad ab system ka baqi data load karein
-      await init(); 
-      
-    } else {
-      err.textContent = 'Aapke paas admin panel ka access nahi hai.';
+      window.location.reload(); // Admin hai to yahi page refresh kar ke dashboard khol do
+    } 
+    else if (userDoc && userDoc.role === 'teacher') {
+      sessionStorage.setItem('loggedInUser', JSON.stringify(userDoc));
+      window.location.href = 'teacher.html'; // Teacher ko teacher page par bhej do
+    } 
+    else if (userDoc && userDoc.role === 'mufattish') {
+      sessionStorage.setItem('loggedInUser', JSON.stringify(userDoc));
+      window.location.href = 'mufattish.html'; // Mufattish ko mufattish page par bhej do
+    } 
+    else {
+      err.textContent = 'Aapka role define nahi hai.';
       err.style.display = 'block';
       await firebase.auth().signOut();
     }
@@ -623,45 +623,52 @@ function dCls(id){
 function dUser(id){if(!confirm('Delete karna hai?'))return;S.users=S.users.filter(u=>u.id!==id);sv.u();toast('Delete ho gaya');uc();}
 
 async function init() {
-  // Page load hone par loading screen dikhayen
-  document.getElementById('root').innerHTML = '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f172a;color:#fff;font-size:18px;font-weight:bold;">Account verify ho raha hai... ⏳</div>';
+  const rootEl = document.getElementById('root');
+  if(rootEl) {
+    rootEl.innerHTML = '<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0f172a;color:#fff;font-size:18px;font-weight:bold;">Account verify ho raha hai... ⏳</div>';
+  }
 
-  // Ab hum Firebase Auth ka listener lagayenge jo real-time login status check karega
   firebase.auth().onAuthStateChanged(async (firebaseUser) => {
     if (firebaseUser) {
-      // 1. Agar Firebase Verify kar le ke user logged in hai, tabhi Database se data mangen
-      try {
-        let u = await db.get(K.U);
-        S.users = u || [];
-        S.classes = (await db.get(K.C)) || [];
-        S.students = (await db.get(K.S)) || [];
-        S.att = (await db.get(K.A)) || [];
-        S.reports = (await db.get(K.R)) || [];
+      const savedUser = sessionStorage.getItem('loggedInUser');
+      let parsed = savedUser ? JSON.parse(savedUser) : null;
 
-        // Local storage se admin ka data set karein
-        const savedUser = sessionStorage.getItem('loggedInUser');
-        if (savedUser) {
-          const parsed = JSON.parse(savedUser);
-          if (parsed.role === 'admin') {
-            S.user = parsed;
-            S.page = 'ov';
-          }
+      // 1. Agar login karne wala Admin hai, toh hi data fetch karein
+      if (parsed && parsed.role === 'admin') {
+        try {
+          let u = await db.get(K.U);
+          S.users = u || [];
+          S.classes = (await db.get(K.C)) || [];
+          S.students = (await db.get(K.S)) || [];
+          S.att = (await db.get(K.A)) || [];
+          S.reports = (await db.get(K.R)) || [];
+
+          S.user = parsed;
+          S.page = 'ov';
+          render();
+        } catch (error) {
+          console.error("Data load error:", error);
+          sessionStorage.removeItem('loggedInUser');
+          S.user = null;
+          await firebase.auth().signOut();
+          render();
         }
-        render(); // Dashboard load ho jayega
-        
-      } catch (error) {
-        console.error("Data load error:", error);
-        // Agar database fetch karne me masla aaye, toh purana session clear kar do
-        sessionStorage.removeItem('loggedInUser');
-        S.user = null;
-        await firebase.auth().signOut();
-        render();
+      } 
+      // 2. Agar login karne wala Teacher ya Mufattish hai, toh unhe unke page par bhej dein
+      else if (parsed && parsed.role === 'teacher') {
+          window.location.href = 'teacher.html';
+      } 
+      else if (parsed && parsed.role === 'mufattish') {
+          window.location.href = 'mufattish.html';
+      } 
+      else {
+          render();
       }
     } else {
-      // 2. Agar Firebase me login expire ho gaya hai ya properly login nahi hua
+      // Logged out
       sessionStorage.removeItem('loggedInUser');
       S.user = null;
-      render(); // Wapas Login form par bhej dega
+      render();
     }
   });
 }
