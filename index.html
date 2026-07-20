@@ -501,33 +501,60 @@ function clsBody(){
   const te=S.users.filter(u=>u.role==='teacher');
   const mu=S.users.filter(u=>u.role==='mufattish');
   
-  const clsOptions = CNAMES.map(n=>`<option ${(d.n||'Prep')===n?' selected':''}>${n}</option>`).join('');
-  const secOptions = SECS.map(s=>`<option ${(d.s||'A')===s?' selected':''}>${s}</option>`).join('');
+  // Naye Region aur State ke options
+  const regions = ['Ajmer', 'Delhi', 'Mumbai', 'Hyderabad', 'Bangalore', 'Kolkata'];
+  const states = ['Gujarat', 'Rajasthan', 'M.P.', 'U.P. East', 'U.P. West', 'Bihar', 'Chhattisgarh', 'Maharashtra', 'MMR', 'Karnataka', 'Telangana', 'Jharkhand', 'Assam', 'West Bengal'];
   
+  // Mobile me achhe se scroll hone ke liye max-height aur overflow-y lagaya hai
   return `
-  <div class="g2">
-    <div><label class="fl">Class Naam</label><select id="mn" class="fi">${clsOptions}</select></div>
-    <div><label class="fl">Section</label><select id="ms" class="fi">${secOptions}</select></div>
-  </div>
-  <div class="g2">
-    <div><label class="fl">Timing</label><input id="mt" class="fi" value="${esc(d.timing||'')}" placeholder="8AM - 1PM"/></div>
-    <div><label class="fl">Room No</label><input id="mr" class="fi" value="${esc(d.room||'')}" placeholder="Room 5"/></div>
-  </div>
-  <div><label class="fl">👨‍🏫 Teacher Assign Karen</label>
-    <select id="mte" class="fi"><option value="">-- Teacher chunen --</option>
-      ${te.length===0?'<option disabled>Pehle teacher banao</option>':''}
-      ${te.map(t=>`<option value="${t.id}"${d.tId===t.id?' selected':''}>${esc(t.nm||t.name)} (${esc(t.un||t.username)})</option>`).join('')}
-    </select>
-  </div>
-  <div><label class="fl">🔍 Mufattish Assign Karen</label>
-    <select id="mmu" class="fi"><option value="">-- Mufattish chunen --</option>
-      ${mu.length===0?'<option disabled>Pehle mufattish banao</option>':''}
-      ${mu.map(m=>`<option value="${m.id}"${d.mId===m.id?' selected':''}>${esc(m.nm||m.name)} (${esc(m.un||m.username)})</option>`).join('')}
-    </select>
-  </div>
-  <div><label class="fl">Notes (ikhtiari)</label><textarea id="mno" class="fi" rows="2" style="resize:none">${esc(d.notes||'')}</textarea></div>`;
-}
+  <div style="max-height:65vh;overflow-y:auto;padding-right:8px;display:flex;flex-direction:column;gap:12px;">
+    
+    <div><label class="fl">Region</label>
+      <select id="mreg" class="fi">
+        <option value="">-- Region chunen --</option>
+        ${regions.map(r => `<option value="${r}"${(d.region||'')===r?' selected':''}>${r}</option>`).join('')}
+      </select>
+    </div>
 
+    <div><label class="fl">State</label>
+      <select id="msta" class="fi">
+        <option value="">-- State chunen --</option>
+        ${states.map(s => `<option value="${s}"${(d.state||'')===s?' selected':''}>${s}</option>`).join('')}
+      </select>
+    </div>
+
+    <div><label class="fl">Jamia Ka Naam</label>
+      <input id="mjam" class="fi" value="${esc(d.jamia||'')}" placeholder="Jamia ka naam likhein"/>
+    </div>
+
+    <div><label class="fl">Class Ka Naam</label>
+      <input id="mn" class="fi" value="${esc(d.n||'')}" placeholder="Class ka naam likhein"/>
+    </div>
+
+    <div><label class="fl">Timing</label>
+      <input id="mt" class="fi" value="${esc(d.timing||'')}" placeholder="8AM - 1PM"/>
+    </div>
+
+    <div><label class="fl">👨‍🏫 Teacher Assign Karen</label>
+      <select id="mte" class="fi"><option value="">-- Teacher chunen --</option>
+        ${te.length===0?'<option disabled>Pehle teacher banao</option>':''}
+        ${te.map(t=>`<option value="${t.id}"${d.tId===t.id?' selected':''}>${esc(t.nm||t.name)} (${esc(t.un||t.username)})</option>`).join('')}
+      </select>
+    </div>
+
+    <div><label class="fl">🔍 Mufattish Assign Karen</label>
+      <select id="mmu" class="fi"><option value="">-- Mufattish chunen --</option>
+        ${mu.length===0?'<option disabled>Pehle mufattish banao</option>':''}
+        ${mu.map(m=>`<option value="${m.id}"${d.mId===m.id?' selected':''}>${esc(m.nm||m.name)} (${esc(m.un||m.username)})</option>`).join('')}
+      </select>
+    </div>
+
+    <div><label class="fl">Notes (ikhtiari)</label>
+      <textarea id="mno" class="fi" rows="2" style="resize:none" placeholder="Koi note likhna ho toh yahan likhein...">${esc(d.notes||'')}</textarea>
+    </div>
+    
+  </div>`;
+}
 function userBody(){
   const d=S.modal.data||{};
   const nDisplay = d.nm||d.name||'';
