@@ -572,14 +572,14 @@ function userBody() {
     </div>
 
     <div>
-      <label class="fl">Phone Number</label>
-      <!-- oninput ki wajah se isme sirf 10 number hi type ho payenge, text type nahi hoga -->
-      <input id="uphone" type="tel" class="fi" value="${esc(d.phone || '')}" placeholder="10 digits ka mobile number" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)"/>
+      <label class="fl">Password</label>
+      <input id="upw" type="text" class="fi" placeholder="${d.id ? 'Naya password (agar change nahi karna toh khali chhod dein)' : 'Password banayein'}"/>
     </div>
 
     <div>
-      <label class="fl">Password</label>
-      <input id="upw" type="text" class="fi" placeholder="${d.id ? 'Naya password (agar change nahi karna toh khali chhod dein)' : 'Password banayein'}"/>
+      <label class="fl">Phone Number</label>
+      <!-- oninput ki wajah se isme sirf 10 number hi type ho payenge, text type nahi hoga -->
+      <input id="uphone" type="tel" class="fi" value="${esc(d.phone || '')}" placeholder="10 digits ka mobile number" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10)"/>
     </div>
 
   </div>`;
