@@ -286,7 +286,9 @@ function tOv(){
 function tStu(){
   const mc=myCls();if(!mc)return noCls();
   const ms=myStus();const q=S.q.toLowerCase();
-  const list=ms.filter(s=>!q||[s.n,s.fn,s.sid].some(v=>v?.toLowerCase().includes(q)));
+  // Search me Dakhila Number (dn) ko shamil kiya
+  const list=ms.filter(s=>!q||[s.n,s.fn,s.dn].some(v=>v?.toLowerCase().includes(q)));
+  
   return `<div class="gap">
   ${clsSelectorHTML()}
   <div class="bw">
@@ -301,9 +303,6 @@ function tStu(){
     ${list.map((s,i)=>{
       const clr=COLORS[i%COLORS.length];
       const sj=esc(JSON.stringify(s));
-      const sAtt=S.att.filter(a=>a.sId===s.id);
-      const sP=sAtt.filter(a=>a.st==='present').length;
-      const sT=sAtt.length;const sPp=pct(sP,sT);
       return `<div class="card"><div style="height:6px;background:${clr}"></div><div style="padding:14px">
         <div class="row" style="margin-bottom:12px">
           <div class="av" style="width:48px;height:48px;border-radius:14px;background:${clr}15;color:${clr};font-size:20px;font-weight:800">${s.n[0].toUpperCase()}</div>
@@ -314,8 +313,8 @@ function tStu(){
           </div>
         </div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px">
-          <div style="background:#f8fafc;border-radius:8px;padding:6px 8px"><p style="color:#94a3b8;font-weight:600">Roll No</p><p style="font-weight:700">${esc(s.rn||'—')}</p></div>
-          <div style="background:#f8fafc;border-radius:8px;padding:6px 8px"><p style="color:#94a3b8;font-weight:600">Student ID</p><p style="font-weight:700">${esc(s.sid||'—')}</p></div>
+          <div style="background:#f8fafc;border-radius:8px;padding:6px 8px"><p style="color:#94a3b8;font-weight:600">Dakhila No</p><p style="font-weight:700">${esc(s.dn||'—')}</p></div>
+          <div style="background:#f8fafc;border-radius:8px;padding:6px 8px"><p style="color:#94a3b8;font-weight:600">Admission</p><p style="font-weight:700">${esc(s.ad?fD(s.ad):'—')}</p></div>
         </div>
       </div></div>`;}).join('')}
   </div>`}
@@ -397,18 +396,48 @@ function upGr(sid){
 
 function stuBody(){
   const d=S.modal.data||{};
+  
+  // Automatic Dakhila Number Generate Karne Ka Logic
+  let dn = d.dn || '';
+  if(!dn) {
+    let max = 0;
+    S.students.forEach(st => {
+      if(st.dn && st.dn.startsWith('PC-')) {
+        let num = parseInt(st.dn.replace('PC-', ''));
+        if(num > max) max = num;
+      }
+    });
+    dn = 'PC-' + String(max + 1).padStart(4, '0');
+  }
+  
+  // Aaj ki date default admission date ke liye
+  const today = new Date().toISOString().slice(0,10);
+
   return `<div><label class="fl">Student Naam *</label><input id="sn" class="fi" value="${esc(d.n||'')}"/></div>
   <div><label class="fl">Walid ka Naam</label><input id="sfn" class="fi" value="${esc(d.fn||'')}"/></div>
-  <div><label class="fl">Roll Number</label><input id="srn" class="fi" value="${esc(d.rn||'')}"/></div>
-  <div><label class="fl">Student ID</label><input id="ssid" class="fi" value="${esc(d.sid||'')}"/></div>
-  <div><label class="fl">Phone</label><input id="sph" class="fi" value="${esc(d.ph||'')}"/></div>`;
+  <div><label class="fl">Admission Date</label><input type="date" id="sad" class="fi" value="${esc(d.ad||today)}"/></div>
+  <div><label class="fl">Dakhila Number (Auto)</label><input id="sdn" class="fi" value="${esc(dn)}" readonly style="background:#f1f5f9;cursor:not-allowed;color:#64748b;" title="Ye automatic generate hota hai"/></div>
+  <div><label class="fl">Sarparast Ka Naam</label><input id="ssn" class="fi" value="${esc(d.sarn||'')}"/></div>
+  <div><label class="fl">Sarparast Ka Mobail No.</label><input id="sph" class="fi" value="${esc(d.ph||'')}"/></div>`;
 }
 
 function sStu(){
   const d=S.modal.data;const mc=myCls();if(!mc)return;
   const n=document.getElementById('sn').value.trim();
-  if(!n)return;
-  const obj={id:d?.id||uid(),cId:mc.id,n,fn:document.getElementById('sfn').value,rn:document.getElementById('srn').value,sid:document.getElementById('ssid').value,ph:document.getElementById('sph').value,ca:d?.ca||new Date().toISOString()};
+  if(!n) { toast('Student ka naam zaroori hai', 'e'); return; }
+  
+  const obj={
+    id:d?.id||uid(),
+    cId:mc.id,
+    n:n,
+    fn:document.getElementById('sfn').value,
+    ad:document.getElementById('sad').value, // Admission Date
+    dn:document.getElementById('sdn').value, // Dakhila Number
+    sarn:document.getElementById('ssn').value, // Sarparast Ka Naam
+    ph:document.getElementById('sph').value, // Sarparast Ka Mobile
+    ca:d?.ca||new Date().toISOString()
+  };
+  
   S.students=d?S.students.map(s=>s.id===d.id?obj:s):[...S.students,obj];
   sv.s();cm();toast('Saved Successfully ✓');uc();
 }
