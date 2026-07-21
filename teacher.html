@@ -99,13 +99,24 @@ tr:hover td{background:#fafcff}
 const uid=()=>'x'+Date.now()+Math.random().toString(36).slice(2,5);
 const tod=()=>new Date().toISOString().slice(0,10);
 const fD=d=>{try{return new Date(d+'T12:00').toLocaleDateString('en-PK',{day:'2-digit',month:'short',year:'numeric'});}catch{return d;}};
-const fDlong=d=>{try{return new Date(d+'T12:00').toLocaleDateString('ur-PK',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}catch{return d;}};
+const fDlong = d => {
+  try {
+    return new Date(d + 'T12:00').toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      day: 'numeric', 
+      month: 'long', 
+      year: 'numeric' 
+    });
+  } catch {
+    return d;
+  }
+};
 const grd=(m,t)=>{const p=m/t*100;return p>=90?'A+':p>=80?'A':p>=65?'B':p>=50?'C':p>=40?'D':'F';};
 const gBg=g=>g==='A+'||g==='A'?'#dcfce7':g==='B'?'#dbeafe':g==='C'?'#fef3c7':'#fee2e2';
 const gCl=g=>g==='A+'||g==='A'?'#15803d':g==='B'?'#1d4ed8':g==='C'?'#d97706':'#dc2626';
 const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 const pct=(n,d)=>d?Math.round(n/d*100):0;
-const URMO=['جنوری','فروری','مارچ','اپریل','مئی','جون','جولائی','اگست','ستمبر','اکتوبر','نومبر','دسمبر'];
+const URMO = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const COLORS=['#3b82f6','#10b981','#f59e0b','#ef4444','#8b5cf6','#06b6d4','#ec4899','#14b8a6','#f97316','#6366f1'];
 const bH=s=>{const m={present:{bg:'#dcfce7',c:'#15803d',l:'✓ Hazir'},absent:{bg:'#fee2e2',c:'#dc2626',l:'✗ Ghair Hazir'},late:{bg:'#fef3c7',c:'#d97706',l:'⏰ Der Se'}};const x=m[s]||{bg:'#f1f5f9',c:'#64748b',l:s};return `<span class="badge" style="background:${x.bg};color:${x.c}">${x.l}</span>`;};
 const noDt=(icon,msg)=>`<div class="nodata"><div style="font-size:44px;margin-bottom:12px">${icon}</div><p style="font-size:14px;font-weight:500">${msg}</p></div>`;
