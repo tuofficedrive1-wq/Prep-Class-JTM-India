@@ -617,13 +617,26 @@ async function init(){
 
       try {
         // Auth verify hone ke baad hi data fetch karein
-        S.users = (await db.get(K.U)) || []; 
+       S.users = (await db.get(K.U)) || []; 
         S.classes = (await db.get(K.C)) || [];
         S.students = (await db.get(K.S)) || [];
         S.att = (await db.get(K.A)) || [];
         S.reports = (await db.get(K.R)) || [];
+        
+        // NAYA: Admin ki set ki hui kitaben Firebase se mangwana (Safe Fetching)
         let fetchedBooks = await db.get('books_list');
-        S.books = (fetchedBooks && fetchedBooks.length === 5) ? fetchedBooks : [[], [], [], [], []];
+       if (fetchedBooks && Array.isArray(fetchedBooks)) {
+            // Agar data sahi hai to 5 slots set kar dega
+            S.books = [
+                fetchedBooks[0] || [],
+                fetchedBooks[1] || [],
+                fetchedBooks[2] || [],
+                fetchedBooks[3] || [],
+                fetchedBooks[4] || []
+            ];
+        } else {
+            S.books = [[], [], [], [], []];
+        }
         
         // 100% Accurate Email Matching (Capital/Small letters ka masla khatam)
         const userEmail = firebaseUser.email.toLowerCase();
