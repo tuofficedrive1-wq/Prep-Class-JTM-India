@@ -98,6 +98,7 @@ tr:hover td{background:#fafcff}
 <script>
 const uid=()=>'x'+Date.now()+Math.random().toString(36).slice(2,5);
 const tod=()=>new Date().toISOString().slice(0,10);
+  const ADMIN_BOOKS = ['Noorani Qaida', 'Nazra Quran', 'Hifz', 'Tajweed', 'Dua & Sunnat', 'Seerat', 'Urdu', 'Math', 'English', 'Science'];
 const fD=d=>{try{return new Date(d+'T12:00').toLocaleDateString('en-PK',{day:'2-digit',month:'short',year:'numeric'});}catch{return d;}};
 const fDlong = d => {
   try {
@@ -375,26 +376,38 @@ function tRp(){
   
   return `<div class="gap">
   ${clsSelectorHTML()}
-  <div><h1 class="pt">Monthly Report</h1></div>
-  <div style="display:flex;gap:10px">
-    <select class="fi" onchange="S.rM=+this.value;uc()">${mOptions}</select>
-    <button onclick="sRpts()" class="btn bb">💾 Save Karen</button>
+  <div class="bw">
+    <div><h1 class="pt">Monthly Report</h1><p class="ps">Har student ki 5 books ki report (Pages/Sabak)</p></div>
+    <select class="fi" style="width:160px; font-weight:bold" onchange="S.rM=+this.value;uc()">${mOptions}</select>
   </div>
-  <div class="card">
-    <div class="ovx"><table style="min-width:580px">
-    <thead><tr><th>Naam</th><th>Hasil Number</th><th>Kul Number</th><th>Grade</th><th>Remarks</th></tr></thead>
-    <tbody>${ms.map(s=>{
+  
+  <!-- Cards ke liye grid layout -->
+  <div class="g3">
+    ${ms.length===0?noDt('👨‍🎓','Koi student nahi'): ms.map(s=>{
+      // Database se purani report check kar rahe hain
       const r=S.reports.find(x=>x.sId===s.id&&x.cId===mc.id&&x.m===S.rM&&x.y===S.rY);
-      const mk=r?.mk??'';const tot=r?.tot||100;const g=mk!==''?grd(parseInt(mk)||0,tot):null;
-      return `<tr>
-        <td>${esc(s.n)}</td>
-        <td><input type="number" id="mk${s.id}" value="${mk}" oninput="upGr('${s.id}')" class="fi" style="width:70px"/></td>
-        <td><input type="number" id="tot${s.id}" value="${tot}" oninput="upGr('${s.id}')" class="fi" style="width:70px"/></td>
-        <td id="gr${s.id}">${g?g:''}</td>
-        <td><input id="rm${s.id}" value="${esc(r?.rem||'')}" class="fi"/></td>
-      </tr>`;
+      // Agar books ka data na ho to 5 khali slots banayen
+      const bks = (r && r.books && r.books.length === 5) ? r.books : Array(5).fill({n:'', p:''});
+      
+      let rows = '';
+      for(let i=0; i<5; i++){
+        const opts = ADMIN_BOOKS.map(b=>`<option value="${b}" ${bks[i].n===b?'selected':''}>${b}</option>`).join('');
+        rows += `
+        <div class="row" style="margin-bottom:8px">
+          <select id="bk_${s.id}_${i}" class="fi" style="flex:2; padding:6px; font-size:12px">
+            <option value="">Book ${i+1}</option>
+            ${opts}
+          </select>
+          <input type="number" id="pg_${s.id}_${i}" value="${bks[i].p}" class="fi" placeholder="Pages" style="flex:1; padding:6px; font-size:12px"/>
+        </div>`;
+      }
+
+      return `<div class="card cp">
+        <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;color:#1e293b;border-bottom:1px solid #f1f5f9;padding-bottom:8px">👨‍🎓 ${esc(s.n)}</h3>
+        ${rows}
+        <button onclick="sStuRpt('${s.id}')" class="btn bb" style="width:100%;justify-content:center;margin-top:6px;font-size:12px">💾 Submit Report</button>
+      </div>`;
     }).join('')}
-    </tbody></table></div>
   </div></div>`;
 }
 
@@ -466,17 +479,38 @@ function mAllAtt(st){
   S.att=[...S.att.filter(a=>!(a.cId===mc.id&&a.date===S.attDate)),...ms.map(s=>({id:uid(),sId:s.id,cId:mc.id,date:S.attDate,st,by:S.user.id,at:new Date().toISOString()}))];
   sv.a();uc();
 }
-function sRpts(){
-  const mc=myCls();if(!mc)return;const ms=myStus();
-  const base=S.reports.filter(r=>!(r.cId===mc.id&&r.m===S.rM&&r.y===S.rY));
-  const add=[];
-  ms.forEach(s=>{
-    const mv=document.getElementById('mk'+s.id)?.value;if(mv===''||mv===undefined)return;
-    const m=parseInt(mv)||0;const t=parseInt(document.getElementById('tot'+s.id)?.value)||100;
-    const rem=document.getElementById('rm'+s.id)?.value||'';
-    add.push({id:uid(),sId:s.id,cId:mc.id,m:S.rM,y:S.rY,mk:m,tot:t,gr:grd(m,t),rem,by:S.user.id,ca:new Date().toISOString()});
-  });
-  S.reports=[...base,...add];sv.r();toast('Reports Saved ✓');
+// Ye naya function hai jo sirf ek waqt mein ek student ki report save karega
+function sStuRpt(sId) {
+  const mc = myCls(); if(!mc) return;
+  
+  const bks = [];
+  for(let i=0; i<5; i++){
+    const n = document.getElementById(`bk_${sId}_${i}`).value;
+    const p = document.getElementById(`pg_${sId}_${i}`).value;
+    bks.push({n, p});
+  }
+  
+  const existingIdx = S.reports.findIndex(r => r.sId === sId && r.cId === mc.id && r.m === S.rM && r.y === S.rY);
+  
+  const newReport = {
+    id: existingIdx >= 0 ? S.reports[existingIdx].id : uid(),
+    sId: sId,
+    cId: mc.id,
+    m: S.rM,
+    y: S.rY,
+    books: bks, // 5 books aur unke pages array mein save honge
+    by: S.user.id,
+    ca: new Date().toISOString()
+  };
+
+  if(existingIdx >= 0) {
+    S.reports[existingIdx] = newReport;
+  } else {
+    S.reports.push(newReport);
+  }
+  
+  sv.r();
+  toast('Student Report Saved ✓');
 }
 
 async function init(){
