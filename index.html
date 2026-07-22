@@ -776,14 +776,14 @@ function aBk() {
     </div>
     <div class="g3">`;
     
-  // 5 alag alag box banayenge (Book 1 se Book 5 tak)
   for(let i=0; i<5; i++) {
     const list = S.books[i] || [];
     html += `<div class="card cp">
       <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;color:#1e293b;border-bottom:1px solid #f1f5f9;padding-bottom:8px">📚 Book ${i+1} ke Options</h3>
       
       <div class="row" style="margin-bottom:16px">
-        <input id="bki_${i}" class="fi" placeholder="Nayi book likhen..." style="flex:1" onkeydown="if(event.key==='Enter')addBk(${i})"/>
+        <!-- Placeholder me bataya gaya hai ke koma se alag karen -->
+        <input id="bki_${i}" class="fi" placeholder="Koma (,) laga kar kitaben likhen..." style="flex:1" onkeydown="if(event.key==='Enter')addBk(${i})"/>
         <button class="btn bb" style="padding:8px 12px" onclick="addBk(${i})">Add</button>
       </div>
       
@@ -800,6 +800,36 @@ function aBk() {
   
   html += `</div></div>`;
   return html;
+}
+
+function addBk(slot) {
+  const inp = document.getElementById(`bki_${slot}`);
+  const val = inp.value.trim();
+  if(!val) return;
+  
+  // NAYA: Koma (,) se alag kar ke array banayen
+  const newBooks = val.split(',').map(b => b.trim()).filter(b => b !== '');
+  
+  let addedCount = 0;
+  let dupCount = 0;
+
+  // Har kitab ko check karke add karen
+  newBooks.forEach(book => {
+    if(!S.books[slot].includes(book)) {
+      S.books[slot].push(book);
+      addedCount++;
+    } else {
+      dupCount++; // Agar pehle se mojud hai
+    }
+  });
+  
+  if (addedCount > 0) {
+    sv.b(); // Database me save
+    toast(`${addedCount} Kitab(en) add ho gayin ✓`); 
+    uc(); // Page refresh
+  } else if (dupCount > 0) {
+    toast('Ye kitab(en) list me pehle se mojud hain!', 'e'); 
+  }
 }
 
 function addBk(slot) {
