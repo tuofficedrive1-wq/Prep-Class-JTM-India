@@ -114,11 +114,13 @@ const noDt=(icon,msg)=>`<div class="nodata"><div style="font-size:44px;margin-bo
 let S={
   user:null,page:'ov',side:false,
   users:[],classes:[],students:[],att:[],reports:[],
+  books: [[], [], [], [], []], // NAYA: 5 books ke dropdowns ke liye alag alag array
   q:'',attDate:tod(),attCls:'',
   rM:new Date().getMonth()+1,rY:new Date().getFullYear(),rCls:'',clsF:'',
   modal:{show:false,type:'',data:null}
 };
-const sv={u:()=>db.set(K.U,S.users),c:()=>db.set(K.C,S.classes),s:()=>db.set(K.S,S.students),a:()=>db.set(K.A,S.att),r:()=>db.set(K.R,S.reports)};
+// NAYA: sv.b() add kiya hai taake books database me save ho saken
+const sv={u:()=>db.set(K.U,S.users),c:()=>db.set(K.C,S.classes),s:()=>db.set(K.S,S.students),a:()=>db.set(K.A,S.att),r:()=>db.set(K.R,S.reports), b:()=>db.set('books_list',S.books)};
 
 let _tt;
 function toast(msg,type){
@@ -256,7 +258,7 @@ async function logout(){
 
 function dashHTML(){
   const uName = S.user.name || S.user.nm || 'Admin';
-  const navA=[{p:'ov',i:'📊',l:'Dashboard'},{p:'cl',i:'🏫',l:'Prep Classes'},{p:'te',i:'👨‍🏫',l:'Teachers'},{p:'mu',i:'🔍',l:'Mufattish'},{p:'st',i:'👨‍🎓',l:'Students'},{p:'at',i:'📅',l:'Attendance'},{p:'rp',i:'📈',l:'Reports'}];
+  const navA=[{p:'ov',i:'📊',l:'Dashboard'},{p:'cl',i:'🏫',l:'Prep Classes'},{p:'te',i:'👨‍🏫',l:'Teachers'},{p:'mu',i:'🔍',l:'Mufattish'},{p:'st',i:'👨‍🎓',l:'Students'},{p:'at',i:'📅',l:'Attendance'},{p:'rp',i:'📈',l:'Reports'}, {p:'bk',i:'📚',l:'Books Setup'}]; // NAYA: Books Setup menu
   const nh=navA.map(({p,i,l})=>`<button class="nb${S.page===p?' on':''}" onclick="navTo('${p}')"><span style="font-size:16px;flex-shrink:0">${i}</span>${l}</button>`).join('');
   return `<div id="sov" onclick="tgSide()" style="display:${S.side?'block':'none'}" class="ov"></div>
   <div style="display:flex;height:100vh;overflow:hidden">
@@ -292,7 +294,7 @@ function dashHTML(){
 
 function uc(){const el=document.getElementById('ct');if(!el)return render();el.innerHTML=aC();}
 
-function aC(){switch(S.page){case'cl':return aCls();case'te':return aTe();case'mu':return aMu();case'st':return aSt();case'at':return aAt();case'rp':return aRp();default:return aOv();}}
+function aC(){switch(S.page){case'cl':return aCls();case'te':return aTe();case'mu':return aMu();case'st':return aSt();case'at':return aAt();case'rp':return aRp();case'bk':return aBk();default:return aOv();}}
 
 function aOv(){
   const te=S.users.filter(u=>u.role==='teacher');
@@ -734,6 +736,7 @@ async function init() {
           S.students = (await db.get(K.S)) || [];
           S.att = (await db.get(K.A)) || [];
           S.reports = (await db.get(K.R)) || [];
+          S.books = (await db.get('books_list')) || [[], [], [], [], []];
 
           S.user = parsed;
           S.page = 'ov';
@@ -764,6 +767,66 @@ async function init() {
     }
   });
 }
+  // --- BOOKS SETUP NAYE FUNCTIONS ---
+
+function aBk() {
+  let html = `<div class="gap">
+    <div class="bw">
+      <div><h1 class="pt">Books Setup</h1><p class="ps">Teacher ki report ke 5 slots ke liye books ki list set karen</p></div>
+    </div>
+    <div class="g3">`;
+    
+  // 5 alag alag box banayenge (Book 1 se Book 5 tak)
+  for(let i=0; i<5; i++) {
+    const list = S.books[i] || [];
+    html += `<div class="card cp">
+      <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;color:#1e293b;border-bottom:1px solid #f1f5f9;padding-bottom:8px">📚 Book ${i+1} ke Options</h3>
+      
+      <div class="row" style="margin-bottom:16px">
+        <input id="bki_${i}" class="fi" placeholder="Nayi book likhen..." style="flex:1" onkeydown="if(event.key==='Enter')addBk(${i})"/>
+        <button class="btn bb" style="padding:8px 12px" onclick="addBk(${i})">Add</button>
+      </div>
+      
+      <div style="display:flex;flex-direction:column;gap:8px">
+        ${list.length === 0 ? '<p style="font-size:12px;color:#94a3b8;text-align:center">Koi book set nahi ki</p>' : list.map((b, bIdx) => `
+          <div class="row" style="justify-content:space-between;background:#f8fafc;padding:8px 12px;border-radius:8px;border:1px solid #e2e8f0">
+            <span style="font-size:12px;font-weight:600;color:#334155">${esc(b)}</span>
+            <button class="btn bsr" style="padding:4px 8px;font-size:10px" onclick="delBk(${i},${bIdx})">🗑</button>
+          </div>
+        `).join('')}
+      </div>
+    </div>`;
+  }
+  
+  html += `</div></div>`;
+  return html;
+}
+
+function addBk(slot) {
+  const inp = document.getElementById(`bki_${slot}`);
+  const val = inp.value.trim();
+  if(!val) return;
+  
+  // Checking ke kahin same book dobara to nahi add ho rahi
+  if(S.books[slot].includes(val)) { 
+    toast('Ye book is list me pehle se mojud hai!', 'e'); 
+    return; 
+  }
+  
+  S.books[slot].push(val);
+  sv.b(); // Database me save
+  toast(`Book ${slot+1} me add ho gayi ✓`); 
+  uc(); // Page refresh
+}
+
+function delBk(slot, idx) {
+  if(!confirm('Kiya aap waqai is book ko list se hatana chahte hain?')) return;
+  S.books[slot].splice(idx, 1);
+  sv.b(); // Database me save
+  toast('Book list se hat gayi'); 
+  uc(); // Page refresh
+}
+// ----------------------------------
 init();
 </script>
 </body>
