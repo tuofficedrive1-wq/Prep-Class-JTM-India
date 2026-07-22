@@ -369,43 +369,108 @@ function tAtt(){
 }
 
 function tRp(){
-  const mc=myCls();if(!mc)return noCls();
-  const ms=myStus();
+  const mc = myCls(); if(!mc) return noCls();
   
+  S.rpFilterPending = S.rpFilterPending || false;
+  
+  let ms = myStus();
   const mOptions = URMO.map((m,i)=>`<option value="${i+1}"${S.rM===i+1?' selected':''}>${m}</option>`).join('');
+  
+  // Counters ki calculation
+  const totalCount = ms.length;
+  const submittedCount = S.reports.filter(r => r.cId === mc.id && r.m === S.rM && r.y === S.rY).length;
+  const pendingCount = totalCount - submittedCount;
+  
+  // Progress Bar Percentage
+  const progressPct = totalCount === 0 ? 0 : Math.round((submittedCount / totalCount) * 100);
+  
+  // Checkbox Filter Logic
+  if (S.rpFilterPending) {
+    ms = ms.filter(s => !S.reports.find(x => x.sId === s.id && x.cId === mc.id && x.m === S.rM && x.y === S.rY));
+  }
   
   return `<div class="gap">
   ${clsSelectorHTML()}
-  <div class="bw">
-    <div><h1 class="pt">Monthly Report</h1><p class="ps">Har student ki 5 books ki report (Pages/Sabak)</p></div>
-    <select class="fi" style="width:160px; font-weight:bold" onchange="S.rM=+this.value;uc()">${mOptions}</select>
+  
+  <!-- Header & Stats Dashboard -->
+  <div class="card cp" style="background:#f8fafc; border:1px solid #e2e8f0;">
+    <div class="bw">
+      <div>
+         <h1 class="pt">Monthly Report</h1>
+         <p class="ps">Har student ki 5 books ki report</p>
+      </div>
+      <div class="row" style="gap:12px">
+        <select class="fi" style="width:140px; font-weight:bold" onchange="S.rM=+this.value; S.rpFilterPending=false; uc()">${mOptions}</select>
+      </div>
+    </div>
+    
+    <!-- Counters -->
+    <div class="row" style="margin-top:16px; gap:12px; flex-wrap:wrap">
+      <div style="background:#fff; padding:12px; border-radius:10px; border:1px solid #e2e8f0; flex:1; min-width:100px;">
+        <p style="font-size:10px; color:#64748b; font-weight:700; text-transform:uppercase;">Kul Students</p>
+        <p style="font-size:22px; font-weight:800; color:#1e293b; margin-top:2px">${totalCount}</p>
+      </div>
+      <div style="background:#f0fdf4; padding:12px; border-radius:10px; border:1px solid #bbf7d0; flex:1; min-width:100px;">
+        <p style="font-size:10px; color:#15803d; font-weight:700; text-transform:uppercase;">Submit Ho Gayi</p>
+        <p style="font-size:22px; font-weight:800; color:#15803d; margin-top:2px">${submittedCount}</p>
+      </div>
+      <div style="background:#fef2f2; padding:12px; border-radius:10px; border:1px solid #fecaca; flex:1; min-width:100px;">
+        <p style="font-size:10px; color:#dc2626; font-weight:700; text-transform:uppercase;">Baqi Hai</p>
+        <p style="font-size:22px; font-weight:800; color:#dc2626; margin-top:2px">${pendingCount}</p>
+      </div>
+    </div>
+    
+    <!-- Progress Bar (Feature 4) -->
+    <div style="margin-top:16px;">
+      <div style="background:#e2e8f0; border-radius:8px; height:8px; overflow:hidden; width:100%;">
+        <div style="background:#10b981; height:100%; width:${progressPct}%; transition:width 0.4s ease-in-out;"></div>
+      </div>
+      <p style="font-size:11px; color:#64748b; margin-top:6px; text-align:right; font-weight:700;">${progressPct}% Mukammal</p>
+    </div>
+
+    <!-- Pending Filter Checkbox -->
+    <div class="row" style="margin-top:10px; padding-top:12px; border-top:1px solid #e2e8f0;">
+      <label style="display:flex; align-items:center; gap:8px; cursor:pointer; font-size:13px; font-weight:600; color:#475569;">
+        <input type="checkbox" ${S.rpFilterPending ? 'checked' : ''} onchange="S.rpFilterPending=this.checked; uc()" style="width:16px; height:16px; cursor:pointer;" />
+        Sirf Baqi (Pending) Students Dekhayen
+      </label>
+    </div>
   </div>
   
-  <!-- Cards ke liye grid layout -->
+  <!-- Student Cards -->
   <div class="g3">
-    ${ms.length===0?noDt('👨‍🎓','Koi student nahi'): ms.map(s=>{
-      // Database se purani report check kar rahe hain
-      const r=S.reports.find(x=>x.sId===s.id&&x.cId===mc.id&&x.m===S.rM&&x.y===S.rY);
-      // Agar books ka data na ho to 5 khali slots banayen
-      const bks = (r && r.books && r.books.length === 5) ? r.books : Array(5).fill({n:'', p:''});
+    ${ms.length === 0 ? noDt('🏆', S.rpFilterPending ? 'Sab ki report submit ho chuki hai!' : 'Koi student nahi') : ms.map(s => {
+      
+      const r = S.reports.find(x => x.sId === s.id && x.cId === mc.id && x.m === S.rM && x.y === S.rY);
+      const isSub = !!r; 
+      
+      // Auto-Save logic (Feature 3): Check local storage first if not submitted
+      const draft = !isSub ? (JSON.parse(localStorage.getItem('rptDrafts') || '{}')[`${mc.id}_${S.rM}_${S.rY}_${s.id}`]) : null;
+      const bks = isSub ? r.books : (draft || Array(5).fill({n:'', p:''}));
       
       let rows = '';
       for(let i=0; i<5; i++){
         const opts = ADMIN_BOOKS.map(b=>`<option value="${b}" ${bks[i].n===b?'selected':''}>${b}</option>`).join('');
+        // onchange aur oninput lagaya gaya hai draft save karne ke liye
         rows += `
         <div class="row" style="margin-bottom:8px">
-          <select id="bk_${s.id}_${i}" class="fi" style="flex:2; padding:6px; font-size:12px">
+          <select id="bk_${s.id}_${i}" onchange="svDraft('${s.id}')" class="fi" style="flex:2; padding:6px; font-size:12px; ${isSub ? 'background:#f1f5f9; color:#94a3b8; cursor:not-allowed;' : ''}" ${isSub ? 'disabled' : ''}>
             <option value="">Book ${i+1}</option>
             ${opts}
           </select>
-          <input type="number" id="pg_${s.id}_${i}" value="${bks[i].p}" class="fi" placeholder="Pages" style="flex:1; padding:6px; font-size:12px"/>
+          <input type="number" id="pg_${s.id}_${i}" oninput="svDraft('${s.id}')" value="${bks[i].p}" class="fi" placeholder="Pages" style="flex:1; padding:6px; font-size:12px; ${isSub ? 'background:#f1f5f9; color:#94a3b8; cursor:not-allowed;' : ''}" ${isSub ? 'disabled' : ''}/>
         </div>`;
       }
 
-      return `<div class="card cp">
-        <h3 style="font-size:14px;font-weight:700;margin-bottom:12px;color:#1e293b;border-bottom:1px solid #f1f5f9;padding-bottom:8px">👨‍🎓 ${esc(s.n)}</h3>
+      return `<div class="card cp" style="${isSub ? 'border: 2px solid #10b981; background:#f0fdf4;' : 'border: 1px solid #e2e8f0;'}">
+        <div class="bw" style="border-bottom:1px solid ${isSub ? '#bbf7d0' : '#f1f5f9'}; padding-bottom:8px; margin-bottom:12px">
+          <h3 style="font-size:14px;font-weight:700;color:#1e293b; margin:0">👨‍🎓 ${esc(s.n)}</h3>
+          ${isSub ? '<span style="font-size:10px; background:#10b981; color:#fff; padding:3px 8px; border-radius:12px; font-weight:700;">✅ SUBMITTED</span>' : ''}
+        </div>
         ${rows}
-        <button onclick="sStuRpt('${s.id}')" class="btn bb" style="width:100%;justify-content:center;margin-top:6px;font-size:12px">💾 Submit Report</button>
+        <button ${isSub ? 'disabled' : `onclick="sStuRpt('${s.id}')"`} class="btn ${isSub ? 'bsg' : 'bb'}" style="width:100%;justify-content:center;margin-top:6px;font-size:12px; ${isSub ? 'cursor:not-allowed; opacity:0.8; background:#dcfce7; color:#15803d;' : ''}">
+          ${isSub ? '🔒 Report Locked' : '💾 Submit Report'}
+        </button>
       </div>`;
     }).join('')}
   </div></div>`;
@@ -479,15 +544,31 @@ function mAllAtt(st){
   S.att=[...S.att.filter(a=>!(a.cId===mc.id&&a.date===S.attDate)),...ms.map(s=>({id:uid(),sId:s.id,cId:mc.id,date:S.attDate,st,by:S.user.id,at:new Date().toISOString()}))];
   sv.a();uc();
 }
-// Ye naya function hai jo sirf ek waqt mein ek student ki report save karega
 function sStuRpt(sId) {
   const mc = myCls(); if(!mc) return;
   
   const bks = [];
+  let isValid = false; // Validation check ke liye
+  
   for(let i=0; i<5; i++){
     const n = document.getElementById(`bk_${sId}_${i}`).value;
     const p = document.getElementById(`pg_${sId}_${i}`).value;
+    
+    // Feature 1: Validation - Check agar dono me se koi ek cheez dali gayi hai
+    if (n && p) {
+      isValid = true;
+    } else if ((n && !p) || (!n && p)) {
+      toast('Error: Book aur Pages dono likhna zaroori hai!', 'e');
+      return; // Agar adhuri detail hai toh submit rok do
+    }
+    
     bks.push({n, p});
+  }
+  
+  // Agar pancho slots khali hain
+  if (!isValid) {
+    toast('Error: Kam az kam ek Book aur uske Pages bharna zaroori hai!', 'e');
+    return;
   }
   
   const existingIdx = S.reports.findIndex(r => r.sId === sId && r.cId === mc.id && r.m === S.rM && r.y === S.rY);
@@ -498,7 +579,7 @@ function sStuRpt(sId) {
     cId: mc.id,
     m: S.rM,
     y: S.rY,
-    books: bks, // 5 books aur unke pages array mein save honge
+    books: bks,
     by: S.user.id,
     ca: new Date().toISOString()
   };
@@ -510,7 +591,12 @@ function sStuRpt(sId) {
   }
   
   sv.r();
+  
+  // Submit hone ke baad Draft se remove kar dein
+  clrDraft(sId, mc.id, S.rM, S.rY);
+  
   toast('Student Report Saved ✓');
+  uc(); // UI ko refresh karega taake card lock ho jaye aur progress update ho
 }
 
 async function init(){
@@ -560,6 +646,25 @@ async function init(){
       window.location.href = 'index.html';
     }
   });
+}
+  function svDraft(sId) {
+  const mc = myCls(); if(!mc) return;
+  const bks = [];
+  for(let i=0; i<5; i++){
+    bks.push({
+      n: document.getElementById(`bk_${sId}_${i}`).value,
+      p: document.getElementById(`pg_${sId}_${i}`).value
+    });
+  }
+  const drafts = JSON.parse(localStorage.getItem('rptDrafts') || '{}');
+  drafts[`${mc.id}_${S.rM}_${S.rY}_${sId}`] = bks;
+  localStorage.setItem('rptDrafts', JSON.stringify(drafts));
+}
+
+function clrDraft(sId, mcId, m, y) {
+  const drafts = JSON.parse(localStorage.getItem('rptDrafts') || '{}');
+  delete drafts[`${mcId}_${m}_${y}_${sId}`];
+  localStorage.setItem('rptDrafts', JSON.stringify(drafts));
 }
 init();
 </script>
