@@ -125,12 +125,11 @@ const noCls=(msg='Koi class assign nahi',sub='Admin se class assignment karwaen'
 let S={
   user:null,page:'ov',side:false,
   users:[],classes:[],students:[],att:[],reports:[],
-  books: [[], [], [], [], []], // NAYA: Admin ki set ki hui books ke liye
+  books: [[], [], [], [], []], // Yahan admin ki books aayengi
   q:'',attDate:tod(),attCls:'', activeCls:'',
   rM:new Date().getMonth()+1,rY:new Date().getFullYear(),
   modal:{show:false,type:'',data:null}
 };
-// Purana sv object waisa hi rahega
 const sv={s:()=>db.set(K.S,S.students),a:()=>db.set(K.A,S.att),r:()=>db.set(K.R,S.reports)};
 
 let _tt;
@@ -448,11 +447,11 @@ function tRp(){
       const draft = !isSub ? (JSON.parse(localStorage.getItem('rptDrafts') || '{}')[`${mc.id}_${S.rM}_${S.rY}_${s.id}`]) : null;
       const bks = isSub ? r.books : (draft || Array(5).fill({n:'', p:''}));
       
-      let rows = '';
+     let rows = '';
       for(let i=0; i<5; i++){
-        // NAYA: Ab har book slot ke liye admin ki set ki hui list use hogi
-        const bookOptionsList = S.books[i] || [];
-        const opts = bookOptionsList.map(b=>`<option value="${b}" ${bks[i].n===b?'selected':''}>${b}</option>`).join('');
+        // Database se mangwayi hui kitaben yahan set hongi
+        const bookOptionsList = (S.books && S.books[i]) ? S.books[i] : [];
+        const opts = bookOptionsList.map(b => `<option value="${b}" ${bks[i].n===b?'selected':''}>${b}</option>`).join('');
         
         rows += `
         <div class="row" style="margin-bottom:8px">
@@ -623,7 +622,8 @@ async function init(){
         S.students = (await db.get(K.S)) || [];
         S.att = (await db.get(K.A)) || [];
         S.reports = (await db.get(K.R)) || [];
-        S.books = (await db.get('books_list')) || [[], [], [], [], []];
+        let fetchedBooks = await db.get('books_list');
+        S.books = (fetchedBooks && fetchedBooks.length === 5) ? fetchedBooks : [[], [], [], [], []];
         
         // 100% Accurate Email Matching (Capital/Small letters ka masla khatam)
         const userEmail = firebaseUser.email.toLowerCase();
