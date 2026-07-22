@@ -445,7 +445,7 @@ function tRp(){
       const isSub = !!r; 
       
       const draft = !isSub ? (JSON.parse(localStorage.getItem('rptDrafts') || '{}')[`${mc.id}_${S.rM}_${S.rY}_${s.id}`]) : null;
-      const bks = isSub ? r.books : (draft || Array(5).fill({n:'', p:''}));
+      const bks = isSub ? r.books : (draft || Array.from({length: 5}, () => ({n:'', p:''})));
       
      let rows = '';
       for(let i=0; i<5; i++){
