@@ -478,32 +478,109 @@ function aAt() {
 }
 
 function aRp() {
-  const shown=S.rCls?S.classes.filter(c=>c.id===S.rCls):S.classes;
-  const ms=`${S.rY}-${String(S.rM).padStart(2,'0')}`;
-  const gS=cid=>{const ma=S.att.filter(a=>a.cId===cid&&a.date.startsWith(ms));const days=[...new Set(ma.map(a=>a.date))].length;const p=ma.filter(a=>a.st==='present').length;const n=S.students.filter(s=>s.cId===cid).length;return {days,p,n,pp:pct(p,n*days)};};
-  const rpts=S.reports.filter(r=>r.m===S.rM&&r.y===S.rY&&shown.some(c=>c.id===r.cId));
+  // Naye Filters ka State
+  S.rReg = S.rReg || '';
+  S.rSta = S.rSta || '';
+  S.rJam = S.rJam || '';
+  S.rTea = S.rTea || '';
+  S.expCls = S.expCls || {}; // Class ko open/close (Expand) karne ke liye
+
+  // Dropdown ke liye unique lists banana
+  const uReg = [...new Set(S.classes.map(c=>c.region).filter(Boolean))];
+  const uSta = [...new Set(S.classes.map(c=>c.state).filter(Boolean))];
+  const uJam = [...new Set(S.classes.map(c=>c.jamia).filter(Boolean))];
+  const te = S.users.filter(u=>u.role==='teacher');
+
+  // Filters apply karna
+  let shown = S.classes.filter(c => {
+     if(S.rReg && c.region !== S.rReg) return false;
+     if(S.rSta && c.state !== S.rSta) return false;
+     if(S.rJam && c.jamia !== S.rJam) return false;
+     if(S.rTea && c.tId !== S.rTea) return false;
+     return true;
+  });
+
   return `<div class="gap">
-  <div><h1 class="pt">Monthly Reports</h1><p class="ps">Mahana tajzia</p></div>
-  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px">
-    <div><label class="fl">Mahina</label><select class="fi" onchange="S.rM=+this.value;uc()">${URMO.map((m,i)=>`<option value="${i+1}"${S.rM===i+1?' selected':''}>${m}</option>`).join('')}</select></div>
-    <div><label class="fl">Saal</label><select class="fi" onchange="S.rY=+this.value;uc()">${[2024,2025,2026].map(y=>`<option${S.rY===y?' selected':''}>${y}</option>`).join('')}</select></div>
-    <div><label class="fl">Class</label><select class="fi" onchange="S.rCls=this.value;uc()"><option value="">Tamam</option>${S.classes.map(c=>`<option value="${c.id}"${S.rCls===c.id?' selected':''}>${esc(c.n)} ${esc(c.s)}</option>`).join('')}</select></div>
+  <div><h1 class="pt">Monthly Reports</h1><p class="ps">Classes aur Students ki mahana karkardagi (Books & Pages)</p></div>
+  
+  <!-- Filters Box -->
+  <div class="card cp" style="background:#f8fafc; border: 1px solid #e2e8f0;">
+    <div class="g3">
+      <select class="fi" onchange="S.rReg=this.value;uc()"><option value="">Tamam Regions</option>${uReg.map(x=>`<option value="${esc(x)}" ${S.rReg===x?'selected':''}>${esc(x)}</option>`).join('')}</select>
+      <select class="fi" onchange="S.rSta=this.value;uc()"><option value="">Tamam States</option>${uSta.map(x=>`<option value="${esc(x)}" ${S.rSta===x?'selected':''}>${esc(x)}</option>`).join('')}</select>
+      <select class="fi" onchange="S.rJam=this.value;uc()"><option value="">Tamam Jamia</option>${uJam.map(x=>`<option value="${esc(x)}" ${S.rJam===x?'selected':''}>${esc(x)}</option>`).join('')}</select>
+      <select class="fi" onchange="S.rTea=this.value;uc()"><option value="">Tamam Teachers</option>${te.map(x=>`<option value="${x.id}" ${S.rTea===x.id?'selected':''}>${esc(x.nm||x.name)}</option>`).join('')}</select>
+      <select class="fi" onchange="S.rM=+this.value;uc()">${URMO.map((m,i)=>`<option value="${i+1}"${S.rM===i+1?' selected':''}>${m}</option>`).join('')}</select>
+      <select class="fi" onchange="S.rY=+this.value;uc()">${[2024,2025,2026].map(y=>`<option${S.rY===y?' selected':''}>${y}</option>`).join('')}</select>
+    </div>
   </div>
-  <div class="g3">${shown.map(cls=>{const {days,p,n,pp}=gS(cls.id);const col=pp>=75?'#10b981':pp>=50?'#f59e0b':'#ef4444';return `
-  <div class="scard"><div class="bw" style="margin-bottom:10px"><b style="font-size:14px">${esc(cls.n)} ${esc(cls.s)}</b><span style="font-size:16px;font-weight:800;color:${col}">${pp}%</span></div>
-  <div class="prog" style="margin-bottom:8px"><div class="pbar" style="background:${col};width:${pp}%"></div></div>
-  <p style="font-size:11px;color:#64748b">Din: ${days} | Hazir: ${p} | Students: ${n}</p></div>`;}).join('')}</div>
-  <div class="card"><div class="ch"><p style="font-size:13px;font-weight:700">Teacher Reports — ${URMO[S.rM-1]} ${S.rY}</p></div>
-  ${rpts.length===0?noDt('📋','Koi report nahi — Teacher fill karega'):`
-  <div class="ovx"><table style="min-width:480px">
-  <thead><tr><th>Student</th><th>Class</th><th>Marks</th><th>Grade</th><th>Remarks</th></tr></thead>
-  <tbody>${rpts.map(r=>{const s=S.students.find(x=>x.id===r.sId);const cls=S.classes.find(x=>x.id===r.cId);return `
-  <tr><td><b>${esc(s?.n||'—')}</b></td><td>${cls?`${esc(cls.n)} ${esc(cls.s)}`:'—'}</td>
-  <td><b>${r.mk}/${r.tot}</b></td>
-  <td><span class="grbox" style="background:${gBg(r.gr)};color:${gCl(r.gr)}">${r.gr}</span></td>
-  <td style="color:#64748b">${esc(r.rem||'—')}</td></tr>`;}).join('')}
-  </tbody></table></div>`}
+
+  <!-- Class Wise Reports -->
+  <div class="gap">
+    ${shown.length === 0 ? noDt('🏫', 'In filters ke mutabiq koi class nahi mili') : shown.map(cls => {
+       const stus = S.students.filter(s => s.cId === cls.id);
+       const rpts = S.reports.filter(r => r.cId === cls.id && r.m === S.rM && r.y === S.rY);
+       const isExp = !!S.expCls[cls.id];
+       const t = te.find(u => u.id === cls.tId);
+       const pp = pct(rpts.length, stus.length);
+       
+       return `<div class="card">
+          <!-- Class Card Header (Click to Open) -->
+          <div class="cp bw" style="cursor:pointer; background:${isExp?'#f1f5f9':'#fff'}; transition:background 0.2s" onclick="S.expCls['${cls.id}']=${!isExp}; uc()">
+             <div>
+                <h3 style="font-size:15px; font-weight:700; color:#1e293b">${esc(cls.n)} <span style="font-weight:400;color:#64748b">${esc(cls.s)}</span></h3>
+                <p style="font-size:11px; color:#64748b; margin-top:4px">
+                   📍 ${esc(cls.jamia||'Jamia N/A')} | 👨‍🏫 ${esc(t?t.nm:'No Teacher')} | 🌍 ${esc(cls.region||'N/A')}, ${esc(cls.state||'N/A')}
+                </p>
+             </div>
+             <div class="row">
+                <span class="badge" style="background:${pp===100?'#dcfce7':'#fef3c7'}; color:${pp===100?'#15803d':'#d97706'}">${rpts.length}/${stus.length} Submitted</span>
+                <span style="font-size:12px; color:#94a3b8; margin-left:8px; width:16px; text-align:center">${isExp ? '▲' : '▼'}</span>
+             </div>
+          </div>
+          
+          <!-- Student Data Table (Jo open hone par dikhega) -->
+          ${isExp ? `<div style="border-top:1px solid #e2e8f0">
+             ${rpts.length === 0 ? `<div style="padding:20px; text-align:center; color:#94a3b8; font-size:12px">Is mahine ki koi report submit nahi hui</div>` : `
+             <div class="ovx">
+                <table style="min-width:600px; margin:0">
+                   <thead style="background:#f8fafc">
+                      <tr><th style="padding:10px 16px">Student Name</th><th style="padding:10px 16px">Kitaben aur Pages</th><th style="text-align:right; padding:10px 16px">Action</th></tr>
+                   </thead>
+                   <tbody>
+                      ${rpts.map(r => {
+                         const stu = stus.find(s => s.id === r.sId);
+                         // Kitabon ko khubsurat design me dikhane ka format
+                         const bks = (r.books || []).map(b => b.n ? `<span style="background:#e0e7ff; color:#3730a3; padding:2px 6px; border-radius:4px; font-size:11px; display:inline-block">${esc(b.n)} <b style="opacity:0.7">(Pg: ${b.p})</b></span>` : '').filter(Boolean).join(' <span style="color:#cbd5e1">|</span> ');
+                         
+                         return `<tr style="border-top:1px solid #f1f5f9">
+                            <td style="font-weight:600; font-size:13px; padding:12px 16px">${esc(stu?stu.n:'Unknown')}</td>
+                            <td style="padding:12px 16px"><div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center">${bks || '<span style="color:#94a3b8; font-size:11px">Khali Form</span>'}</div></td>
+                            <td style="text-align:right; padding:12px 16px">
+                               ${r.unlocked ? 
+                                  `<span style="font-size:11px; font-weight:700; color:#d97706; background:#fef3c7; padding:4px 8px; border-radius:6px">🔓 Unlocked</span>` 
+                                  : `<button onclick="event.stopPropagation(); unlockRpt('${r.id}')" class="btn bsr" style="padding:5px 10px; font-size:11px">🔓 Unlock</button>`}
+                            </td>
+                         </tr>`;
+                      }).join('')}
+                   </tbody>
+                </table>
+             </div>
+             `}
+          </div>` : ''}
+       </div>`;
+    }).join('')}
   </div></div>`;
+}
+
+// Naya Function: Report ko Unlock karne ke liye
+function unlockRpt(rId) {
+  if(!confirm('Kiya aap is report ko unlock karna chahte hain? Teacher isay dobara edit kar sakega.')) return;
+  // Report me 'unlocked' tag ko true kar dena
+  S.reports = S.reports.map(r => r.id === rId ? {...r, unlocked: true} : r);
+  sv.r();
+  toast('Report Unlocked ✓');
+  uc();
 }
 
 const gBg=g=>g==='A+'||g==='A'?'#dcfce7':g==='B'?'#dbeafe':g==='C'?'#fef3c7':'#fee2e2';
