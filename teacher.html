@@ -623,19 +623,21 @@ async function init(){
         S.att = (await db.get(K.A)) || [];
         S.reports = (await db.get(K.R)) || [];
         
-        // NAYA: Admin ki set ki hui kitaben Firebase se mangwana (Safe Fetching)
+        // NAYA: Firebase ke Object format se wapas Array me convert karna (Fixed)
         let fetchedBooks = await db.get('books_list');
-       if (fetchedBooks && Array.isArray(fetchedBooks)) {
-            // Agar data sahi hai to 5 slots set kar dega
-            S.books = [
-                fetchedBooks[0] || [],
-                fetchedBooks[1] || [],
-                fetchedBooks[2] || [],
-                fetchedBooks[3] || [],
-                fetchedBooks[4] || []
-            ];
-        } else {
-            S.books = [[], [], [], [], []];
+        S.books = [[], [], [], [], []];
+        
+        if (fetchedBooks && Array.isArray(fetchedBooks)) {
+            fetchedBooks.forEach(doc => {
+                // Check karega ke Admin ne naye format me save kiya hai ya nahi
+                if (doc && doc.id !== undefined) {
+                    let idx = parseInt(doc.id.replace('slot', ''));
+                    if(!isNaN(idx) && idx < 5) S.books[idx] = doc.list || [];
+                } else if (Array.isArray(doc)) {
+                    // Agar galti se purana format aa jaye toh usay bhi sambhal lega
+                    S.books = fetchedBooks;
+                }
+            });
         }
         
         // 100% Accurate Email Matching (Capital/Small letters ka masla khatam)
