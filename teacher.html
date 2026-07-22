@@ -442,7 +442,7 @@ function tRp(){
     ${ms.length === 0 ? noDt('🏆', S.rpFilterPending ? 'Sab ki report submit ho chuki hai!' : 'Koi student nahi') : ms.map(s => {
       
       const r = S.reports.find(x => x.sId === s.id && x.cId === mc.id && x.m === S.rM && x.y === S.rY);
-      const isSub = !!r; 
+      const isSub = r && !r.unlocked;
       
       const draft = !isSub ? (JSON.parse(localStorage.getItem('rptDrafts') || '{}')[`${mc.id}_${S.rM}_${S.rY}_${s.id}`]) : null;
       const bks = isSub ? r.books : (draft || Array.from({length: 5}, () => ({n:'', p:''})));
@@ -574,7 +574,7 @@ function sStuRpt(sId) {
   
   const existingIdx = S.reports.findIndex(r => r.sId === sId && r.cId === mc.id && r.m === S.rM && r.y === S.rY);
   
-  const newReport = {
+ const newReport = {
     id: existingIdx >= 0 ? S.reports[existingIdx].id : uid(),
     sId: sId,
     cId: mc.id,
@@ -582,7 +582,8 @@ function sStuRpt(sId) {
     y: S.rY,
     books: bks,
     by: S.user.id,
-    ca: new Date().toISOString()
+    ca: new Date().toISOString(),
+    unlocked: false // NAYA: Dobara submit karne par auto-lock ho jayegi
   };
 
   if(existingIdx >= 0) {
