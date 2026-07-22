@@ -802,13 +802,14 @@ function aBk() {
   return html;
 }
 
+// Naya aur Sahi addBk Function (Jo commas ko support karta hai)
 function addBk(slot) {
   const inp = document.getElementById(`bki_${slot}`);
   const val = inp.value.trim();
   if(!val) return;
   
-  // NAYA: Koma (,) se alag kar ke array banayen
-  const newBooks = val.split(',').map(b => b.trim()).filter(b => b !== '');
+  // English comma (,) aur Urdu comma (،) dono se alag karega
+  const newBooks = val.split(/[,،]/).map(b => b.trim()).filter(b => b !== '');
   
   let addedCount = 0;
   let dupCount = 0;
@@ -819,36 +820,21 @@ function addBk(slot) {
       S.books[slot].push(book);
       addedCount++;
     } else {
-      dupCount++; // Agar pehle se mojud hai
+      dupCount++; 
     }
   });
   
   if (addedCount > 0) {
     sv.b(); // Database me save
     toast(`${addedCount} Kitab(en) add ho gayin ✓`); 
+    inp.value = ''; // Add hone ke baad box ko khali kar dega
     uc(); // Page refresh
   } else if (dupCount > 0) {
     toast('Ye kitab(en) list me pehle se mojud hain!', 'e'); 
   }
 }
 
-function addBk(slot) {
-  const inp = document.getElementById(`bki_${slot}`);
-  const val = inp.value.trim();
-  if(!val) return;
-  
-  // Checking ke kahin same book dobara to nahi add ho rahi
-  if(S.books[slot].includes(val)) { 
-    toast('Ye book is list me pehle se mojud hai!', 'e'); 
-    return; 
-  }
-  
-  S.books[slot].push(val);
-  sv.b(); // Database me save
-  toast(`Book ${slot+1} me add ho gayi ✓`); 
-  uc(); // Page refresh
-}
-
+// Delete karne wala function
 function delBk(slot, idx) {
   if(!confirm('Kiya aap waqai is book ko list se hatana chahte hain?')) return;
   S.books[slot].splice(idx, 1);
